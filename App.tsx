@@ -74,84 +74,84 @@ const App: React.FC = () => {
   const gridNumbers = useMemo(() => Array.from({ length: 90 }, (_, i) => i + 1), []);
 
   return (
-    <div className="flex flex-col landscape:flex-row h-[100dvh] w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
+    <div className="flex flex-col landscape:flex-row h-screen w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
       
-      {/* Sidebar: Controls (Optimized for Landscape Height) */}
-      <section className="flex-shrink-0 flex flex-col items-center justify-between p-1 md:p-5 bg-slate-900 z-20 landscape:w-36 sm:landscape:w-44 md:landscape:w-80 border-b landscape:border-b-0 landscape:border-r border-slate-800 h-auto landscape:h-full overflow-hidden">
+      {/* Sidebar: Branding + Caller Controls */}
+      <section className="flex-shrink-0 flex flex-col items-center justify-between bg-slate-900 z-20 landscape:w-36 sm:landscape:w-44 md:landscape:w-80 p-1 md:p-4 landscape:h-full border-b landscape:border-b-0 landscape:border-r border-slate-800 shadow-2xl overflow-hidden">
         
-        {/* Branding - Only shown on vertical or large screens */}
-        <div className="hidden landscape:hidden md:block text-center mt-2">
-          <h1 className="bingo-font text-xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-500">
+        {/* BRANDING: Visible and compact */}
+        <div className="text-center w-full py-1 landscape:py-0.5">
+          <p className="text-[7px] md:text-sm font-bold tracking-[0.15em] text-slate-400 uppercase leading-none">
+            Pallion Action Group
+          </p>
+          <h1 className="bingo-font text-lg md:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-500 mt-0.5">
             BINGO!
           </h1>
         </div>
           
-        {/* Main Number Ball - Aggressively sized for short screens */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 landscape:justify-start landscape:pt-2 md:landscape:justify-center">
-          <div className="relative mb-1 md:mb-6">
-            <div className="aspect-square w-16 sm:w-28 md:w-56 bg-white rounded-full flex items-center justify-center border-4 md:border-[12px] border-slate-950 shadow-2xl transition-all">
-              <span className="bingo-font text-3xl md:text-[8rem] text-slate-900 tabular-nums leading-none flex items-center justify-center">
+        {/* CURRENT BALL AREA: Optimized for vertical space */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 landscape:my-1">
+          <div className="relative">
+            <div className="aspect-square w-14 sm:w-24 md:w-48 lg:w-56 bg-white rounded-full flex items-center justify-center border-2 md:border-8 border-slate-950 shadow-2xl transition-all">
+              <span className="bingo-font text-2xl md:text-7xl text-slate-900 tabular-nums leading-none">
                 {currentNumber || '--'}
               </span>
             </div>
           </div>
 
-          {/* Rhyme - Tiny on small landscape screens */}
-          <div className="h-4 md:h-20 flex items-center justify-center text-center px-1 mb-2 md:mb-6">
-            {currentNumber ? (
-              <p className="text-[10px] md:text-2xl font-black text-orange-400 italic uppercase leading-tight tracking-tight">
+          <div className="h-4 md:h-12 flex items-center justify-center text-center px-1 mt-1 md:mt-4">
+            {currentNumber && (
+              <p className="text-[8px] md:text-xl font-black text-orange-400 italic uppercase leading-none tracking-tight">
                 {currentRhyme}
               </p>
-            ) : (
-              <p className="text-[8px] md:text-lg text-slate-600 font-bold uppercase animate-pulse">Ready</p>
             )}
           </div>
         </div>
 
-        {/* Action Buttons - Flat layout for landscape thumb access */}
-        <div className="w-full space-y-1 md:space-y-5 px-1 pb-1 md:pb-6">
+        {/* CONTROLS: Chunky buttons, slim padding */}
+        <div className="w-full space-y-1 md:space-y-4 px-1 pb-1 md:pb-4">
           <button
             onClick={drawRandom}
             disabled={drawnNumbers.length >= 90}
-            className="w-full bg-gradient-to-b from-orange-400 to-orange-600 hover:from-orange-300 hover:to-orange-500 py-2 md:py-6 rounded-lg md:rounded-[2rem] font-black text-slate-950 text-xs md:text-3xl active:scale-95 transition-all shadow-[0_2px_0_rgb(154,52,18)] md:shadow-[0_8px_0_rgb(154,52,18)] flex items-center justify-center gap-1 md:gap-3"
+            className="w-full bg-gradient-to-b from-orange-400 to-orange-600 py-1.5 md:py-5 rounded-md md:rounded-2xl font-black text-slate-950 text-[10px] md:text-2xl shadow-[0_2px_0_rgb(154,52,18)] active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center gap-1"
           >
-            <Play fill="currentColor" className="w-3 h-3 md:w-8 md:h-8" />
+            <Play fill="currentColor" size={12} className="md:w-6 md:h-6" />
             <span>CALL NEXT</span>
           </button>
           
-          <div className="grid grid-cols-2 gap-1 md:gap-4">
+          <div className="grid grid-cols-2 gap-1 md:gap-3">
             <button 
               onClick={undoLast} 
               disabled={drawnNumbers.length === 0} 
-              className="bg-slate-800 hover:bg-slate-700 py-1.5 md:py-4 rounded-lg text-[8px] md:text-base font-bold uppercase text-slate-300 active:bg-slate-600 transition-colors flex items-center justify-center gap-1"
+              className="bg-slate-800 py-1 md:py-3 rounded-md text-[8px] md:text-sm font-bold uppercase text-slate-300 flex items-center justify-center gap-1 active:bg-slate-700"
             >
-              <Undo2 className="w-2 h-2 md:w-4 md:h-4" /> UNDO
+              <Undo2 size={8} className="md:w-4 md:h-4" /> UNDO
             </button>
             <button 
               onClick={resetGame} 
-              className="bg-red-600 hover:bg-red-500 py-1.5 md:py-4 rounded-lg text-[8px] md:text-base font-bold uppercase text-white active:bg-red-700 transition-colors flex items-center justify-center gap-1"
+              className="bg-red-600 py-1 md:py-3 rounded-md text-[8px] md:text-sm font-bold uppercase text-white flex items-center justify-center gap-1 active:bg-red-700"
             >
-              <RefreshCw className="w-2 h-2 md:w-4 md:h-4" /> NEW
+              <RefreshCw size={8} className="md:w-4 md:h-4" /> NEW
             </button>
           </div>
         </div>
       </section>
 
-      {/* Main Grid: Master Board */}
-      <main className="flex-1 flex flex-col p-1.5 md:p-8 bg-slate-950 overflow-hidden">
-        {/* Compact Header */}
-        <header className="flex items-center justify-between mb-1 md:mb-6 px-1 text-[8px] md:text-2xl font-black uppercase text-slate-500 tracking-wider">
-          <div className="flex items-center gap-1.5 md:gap-4">
-            <Hash className="w-3 h-3 md:w-8 md:h-8 text-slate-700" />
+      {/* Main Board Area */}
+      <main className="flex-1 flex flex-col p-1.5 md:p-6 bg-slate-950 overflow-hidden">
+        
+        <header className="flex items-center justify-between mb-1 md:mb-4 px-1 text-[8px] md:text-xl font-black uppercase text-slate-500 tracking-widest">
+          <div className="flex items-center gap-1">
+            <Hash size={10} className="md:w-6 md:h-6 text-slate-700" />
             <span>Master Board</span>
           </div>
-          <div className="flex items-center gap-2 md:gap-10">
+          <div className="flex items-center gap-2">
             <span className="text-blue-500">CALLED: <span className="text-white font-mono">{drawnNumbers.length}</span></span>
           </div>
         </header>
 
-        {/* The Grid - Responds perfectly to screen size */}
-        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-0.5 md:gap-3 min-h-0">
+        {/* THE GRID: Maximized numbers */}
+        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-0.5 md:gap-2 min-h-0">
           {gridNumbers.map((num) => {
             const isDrawn = drawnNumbers.includes(num);
             const isCurrent = currentNumber === num;
@@ -161,18 +161,18 @@ const App: React.FC = () => {
                 key={num}
                 onClick={() => handleCall(num)}
                 className={`
-                  relative flex items-center justify-center rounded-[2px] md:rounded-xl border md:border-[3px] transition-all
+                  flex items-center justify-center rounded-[2px] md:rounded-lg border md:border-2 transition-all
                   ${isCurrent 
-                    ? 'bg-yellow-400 border-yellow-200 text-slate-950 z-10 scale-[1.08] shadow-[0_0_20px_rgba(250,204,21,0.6)]' 
+                    ? 'bg-yellow-400 border-yellow-100 text-slate-950 z-10 scale-[1.05] shadow-[0_0_10px_rgba(250,204,21,0.5)]' 
                     : isDrawn 
-                      ? 'bg-blue-600 border-blue-400 text-white shadow-inner' 
-                      : 'bg-slate-900 border-slate-800 text-slate-700 hover:bg-slate-800 hover:text-slate-400'}
+                      ? 'bg-blue-600 border-blue-400 text-white' 
+                      : 'bg-slate-900 border-slate-800 text-slate-700 hover:bg-slate-800'}
                 `}
               >
                 <span className={`font-black leading-none 
                   ${isDrawn 
-                    ? 'text-[11px] landscape:text-xs md:text-4xl' 
-                    : 'text-[9px] landscape:text-[9px] md:text-2xl opacity-20'
+                    ? 'text-[11px] landscape:text-xs sm:landscape:text-base md:text-3xl' 
+                    : 'text-[9px] landscape:text-[10px] sm:landscape:text-xs md:text-xl opacity-20'
                   }`}
                 >
                   {num}
@@ -182,25 +182,25 @@ const App: React.FC = () => {
           })}
         </div>
 
-        {/* Key Footer */}
-        <footer className="mt-1.5 md:mt-8 flex justify-center gap-4 md:gap-20 text-[7px] md:text-lg font-bold uppercase opacity-50 py-1 md:py-4 border-t border-slate-900">
-          <div className="flex items-center gap-1 md:gap-3">
-            <div className="w-2 h-2 md:w-5 md:h-5 bg-blue-600 rounded-sm"></div>
+        {/* LEGEND: Only visible if space permits (hidden on small landscape) */}
+        <footer className="mt-1 landscape:hidden md:flex justify-center gap-10 text-[8px] md:text-sm font-bold uppercase opacity-50 py-1 border-t border-slate-900/50">
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 md:w-4 md:h-4 bg-blue-600 rounded-sm"></div>
             <span>Called</span>
           </div>
-          <div className="flex items-center gap-1 md:gap-3">
-            <div className="w-2 h-2 md:w-5 md:h-5 bg-yellow-400 rounded-sm"></div>
-            <span>Now</span>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 md:w-4 md:h-4 bg-yellow-400 rounded-sm"></div>
+            <span>Current</span>
           </div>
         </footer>
       </main>
 
-      {/* Share Float (Hidden on tiny landscape) */}
+      {/* FLOAT SHARE: Small on landscape */}
       <button 
         onClick={shareApp} 
-        className="fixed bottom-2 right-2 md:bottom-10 md:right-10 bg-slate-800/90 p-2 md:p-6 rounded-full text-slate-300 border border-slate-700 z-50 hover:text-white transition-all shadow-2xl landscape:hidden sm:landscape:flex"
+        className="fixed bottom-2 right-2 md:bottom-8 md:right-8 bg-slate-800/90 p-2 md:p-5 rounded-full text-slate-300 border border-slate-700 z-50 hover:text-white transition-all shadow-2xl landscape:p-1.5"
       >
-        <Share2 className="w-3.5 h-3.5 md:w-8 md:h-8" />
+        <Share2 size={12} className="md:w-8 md:h-8" />
       </button>
     </div>
   );
