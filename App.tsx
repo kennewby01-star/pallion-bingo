@@ -1,34 +1,38 @@
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { getBingoLingo } from './services/gemini';
-import { RefreshCw, Undo2, Play, Info, Hash, Loader2, Share2 } from 'lucide-react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { fetchAllBingoRhymes } from './services/gemini';
+import { RefreshCw, Undo2, Play, Hash, Share2, Sparkles } from 'lucide-react';
 import confetti from 'https://cdn.skypack.dev/canvas-confetti';
 
 const App: React.FC = () => {
   const [drawnNumbers, setDrawnNumbers] = useState<number[]>([]);
   const [rhymes, setRhymes] = useState<Record<number, string>>({});
-  const [isLingoLoading, setIsLingoLoading] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    const init = async () => {
+      const data = await fetchAllBingoRhymes();
+      setRhymes(data);
+      setIsInitializing(false);
+    };
+    init();
+  }, []);
 
   const currentNumber = drawnNumbers.length > 0 ? drawnNumbers[drawnNumbers.length - 1] : null;
-  const currentLingo = currentNumber ? rhymes[currentNumber] : "Ready to Call?";
+  const currentRhyme = currentNumber ? (rhymes[currentNumber] || "Lucky Number") : null;
 
-  const handleCall = useCallback(async (num: number) => {
+  const handleCall = useCallback((num: number) => {
     if (drawnNumbers.includes(num)) return;
-
     setDrawnNumbers(prev => [...prev, num]);
-    setIsLingoLoading(true);
-
-    try {
-      const newLingo = await getBingoLingo(num);
-      setRhymes(prev => ({ ...prev, [num]: newLingo }));
-    } catch (e) {
-      setRhymes(prev => ({ ...prev, [num]: `Number ${num}` }));
-    } finally {
-      setIsLingoLoading(false);
-    }
-
+    
+    // Confetti on last ball!
     if (drawnNumbers.length === 89) {
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      confetti({ 
+        particleCount: 150, 
+        spread: 70, 
+        origin: { y: 0.6 },
+        colors: ['#ffb347', '#ff4b2b', '#ffffff', '#3b82f6']
+      });
     }
   }, [drawnNumbers]);
 
@@ -43,211 +47,118 @@ const App: React.FC = () => {
 
   const undoLast = () => {
     if (drawnNumbers.length === 0) return;
-    const lastNum = drawnNumbers[drawnNumbers.length - 1];
     setDrawnNumbers(prev => prev.slice(0, -1));
-    // Optionally keep rhymes in state to avoid re-fetching if re-called, 
-    // but the user wants it to feel "undone".
-    setIsLingoLoading(false);
   };
 
   const resetGame = () => {
-    if (window.confirm("Start a new game? This will clear the master board.")) {
-      setDrawnNumbers([]);
-      setRhymes({});
-      setIsLingoLoading(false);
-    }
+    // Instant reset to avoid browser dialog issues
+    setDrawnNumbers([]);
+    // Small confetti burst to signal a fresh start
+    confetti({
+      particleCount: 40,
+      spread: 50,
+      origin: { y: 0.8 },
+      colors: ['#3b82f6', '#ffffff']
+    });
   };
 
   const shareApp = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Pallion Bingo Caller',
-          text: 'Check out the Pallion Action Group Bingo Caller!',
+          title: 'Pallion Action Group BINGO!',
+          text: 'Join the Bingo game at Pallion!',
           url: window.location.href,
         });
-      } catch (err) {
-        console.error("Share failed:", err);
-      }
+      } catch (err) { console.error(err); }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert("Link copied to clipboard! Send it to your staff via text or email.");
+      alert("Link copied!");
     }
   };
 
   const gridNumbers = useMemo(() => Array.from({ length: 90 }, (_, i) => i + 1), []);
 
+  if (isInitializing) {
+    return (
+      <div className="h-screen w-screen bg-slate-950 flex flex-col items-center justify-center text-slate-100">
+        <Sparkles className="text-yellow-500 mb-4 animate-spin" size={48} />
+        <h2 className="bingo-font text-2xl text-yellow-500 uppercase tracking-widest text-center">
+          PALLION ACTION GROUP<br/>
+          <span className="text-white text-lg">LOADING...</span>
+        </h2>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col landscape:flex-row h-screen w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
       
-      {/* Caller Side/Top Panel */}
-      <section className="flex-shrink-0 flex flex-col items-center justify-center p-4 bg-slate-900 shadow-2xl z-20 landscape:w-72 landscape:h-full border-b landscape:border-b-0 landscape:border-r border-slate-800">
+      {/* Side Panel: The Caller (Left) */}
+      <section className="flex-shrink-0 flex flex-col items-center justify-between p-3 md:p-4 bg-slate-900 shadow-2xl z-20 landscape:w-80 border-b landscape:border-b-0 landscape:border-r border-slate-800 h-full overflow-hidden">
         
-        <div className="flex items-center justify-between w-full mb-2 landscape:hidden">
-            <button onClick={shareApp} className="p-2 text-slate-400 hover:text-yellow-500">
-                <Share2 size={20} />
-            </button>
-            <h1 className="bingo-font text-lg text-yellow-500 opacity-90 uppercase tracking-tighter">
-              Pallion Action Group
+        {/* Text Header - Replacing Logo */}
+        <div className="w-full text-center flex-shrink-0 pt-2 pb-4">
+          <header className="flex flex-col items-center px-2">
+            <h2 className="text-base md:text-xl font-black text-white uppercase tracking-[0.15em] drop-shadow-md leading-tight">
+              PALLION ACTION GROUP
+            </h2>
+            <h1 className="bingo-font text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-b from-[#ffb347] to-[#ff4b2b] uppercase tracking-tighter drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)] -mt-1">
+              BINGO!
             </h1>
-            <button onClick={resetGame} className="p-2 text-slate-400 hover:text-red-500">
-                <RefreshCw size={20} />
-            </button>
+          </header>
         </div>
-
-        <h1 className="hidden landscape:block bingo-font text-xl text-yellow-500 opacity-90 uppercase tracking-tighter text-center mb-6">
-          Pallion Action Group
-        </h1>
-
-        {/* Big Number Circle */}
-        <div className="relative mb-2 landscape:mb-6">
-          <div className={`
-            w-20 h-20 md:w-28 md:h-28 landscape:w-32 landscape:h-32 bg-white rounded-full flex items-center justify-center 
-            border-4 md:border-8 border-slate-950 shadow-xl transition-all duration-200
-            ${isLingoLoading ? 'ring-4 ring-yellow-500/20 scale-95' : 'scale-100'}
-          `}>
-            <span className="bingo-font text-4xl md:text-5xl landscape:text-6xl text-slate-900 tabular-nums">
-              {currentNumber || '--'}
-            </span>
+          
+        {/* Ball and Rhyme Area */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 py-1">
+          <div className="relative mb-2 md:mb-6 flex-shrink-0">
+              <div className="w-24 h-24 md:w-40 md:h-40 bg-white rounded-full flex items-center justify-center border-[10px] md:border-[14px] border-slate-950 shadow-[0_0_60px_rgba(255,255,255,0.15)] transition-all">
+                <span className="bingo-font text-5xl md:text-8xl text-slate-900 tabular-nums">
+                  {currentNumber || '--'}
+                </span>
+              </div>
           </div>
-          {isLingoLoading && (
-            <div className="absolute -top-1 -right-1 bg-slate-950 rounded-full p-1 border border-slate-700">
-              <Loader2 className="animate-spin text-yellow-500" size={16} />
-            </div>
-          )}
+
+          <div className="px-2 w-full flex flex-col items-center justify-center text-center h-24 md:h-40">
+            {currentNumber ? (
+              <div className="animate-in fade-in zoom-in duration-300 w-full">
+                <p className="text-4xl md:text-6xl font-black text-yellow-500 mb-1 drop-shadow-md">
+                  {currentNumber}
+                </p>
+                <div className="bg-slate-800/80 px-4 py-3 rounded-2xl border border-slate-700 shadow-2xl inline-block w-full max-w-[260px]">
+                  <p className="text-base md:text-2xl font-black text-white italic leading-tight uppercase tracking-tight">
+                    {currentRhyme}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="text-slate-600 font-bold uppercase text-xs md:text-sm tracking-[0.4em] animate-pulse space-y-2">
+                <p>Ready to play?</p>
+                <p className="text-[10px] opacity-50 tracking-widest">Numbers 1 to 90</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Rhyme Phrase */}
-        <div className="text-center h-10 md:h-12 landscape:h-20 flex items-center justify-center px-2 mb-4">
-          <p className={`text-sm md:text-base landscape:text-lg font-bold text-yellow-400 italic leading-tight transition-all duration-200 ${isLingoLoading ? 'opacity-30 blur-[1px]' : 'opacity-100'}`}>
-            {isLingoLoading ? 'Thinking...' : currentLingo}
-          </p>
-        </div>
-
-        {/* Actions */}
-        <div className="w-full flex flex-col gap-2 landscape:gap-4 mt-auto landscape:mt-0">
+        {/* Buttons */}
+        <div className="w-full space-y-3 pb-4 flex-shrink-0 px-2">
           <button
             onClick={drawRandom}
             disabled={drawnNumbers.length >= 90}
-            className="flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 disabled:bg-slate-800 disabled:text-slate-600 p-3 landscape:p-5 rounded-xl font-black text-slate-950 text-base md:text-lg landscape:text-xl shadow-[0_3px_0_rgb(161,98,7)] active:translate-y-1 active:shadow-none transition-all"
+            className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-400 hover:to-yellow-400 disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-600 p-4 md:p-5 rounded-2xl font-black text-slate-950 text-2xl md:text-3xl shadow-[0_6px_0_rgb(154,52,18)] active:translate-y-1 active:shadow-none transition-all outline-none"
           >
-            <Play fill="currentColor" size={18} />
+            <Play fill="currentColor" size={28} />
             CALL NEXT
           </button>
           
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={undoLast}
-              disabled={drawnNumbers.length === 0}
-              className="flex items-center justify-center gap-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-20 p-2 landscape:p-3 rounded-xl transition-all active:scale-95 text-[10px] md:text-xs font-bold uppercase"
+          <div className="grid grid-cols-2 gap-3">
+            <button 
+              onClick={undoLast} 
+              disabled={drawnNumbers.length === 0} 
+              className="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 p-3.5 rounded-xl text-[10px] md:text-xs font-bold uppercase disabled:opacity-30 transition-colors shadow-lg active:scale-95"
             >
-              <Undo2 size={14} />
-              Undo
+              <Undo2 size={16} /> Undo
             </button>
-
-            <button
-              onClick={shareApp}
-              className="hidden landscape:flex items-center justify-center gap-1 bg-slate-800 hover:bg-blue-900/40 p-2 landscape:p-3 rounded-xl transition-all active:scale-95 text-[10px] md:text-xs font-bold uppercase"
-            >
-              <Share2 size={14} />
-              Share
-            </button>
-            <button
-              onClick={resetGame}
-              className="hidden landscape:flex items-center justify-center gap-1 bg-slate-800 hover:bg-red-900/40 p-2 landscape:p-3 rounded-xl transition-all active:scale-95 text-[10px] md:text-xs font-bold uppercase"
-            >
-              <RefreshCw size={14} />
-              Reset
-            </button>
-          </div>
-        </div>
-
-        {/* Stats - Landscape only */}
-        <div className="hidden landscape:flex flex-col w-full mt-8 gap-1">
-          <div className="flex justify-between text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-            <span>Balls Drawn</span>
-            <span>{drawnNumbers.length}/90</span>
-          </div>
-          <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-yellow-500 transition-all duration-500" 
-              style={{ width: `${(drawnNumbers.length / 90) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-      </section>
-
-      {/* Grid Section */}
-      <main className="flex-1 flex flex-col min-h-0 p-2 md:p-4 landscape:p-6 bg-slate-950">
-        <header className="flex items-center justify-between mb-2 landscape:mb-4 px-2 flex-shrink-0">
-          <div className="flex items-center gap-2 text-slate-500 font-bold uppercase tracking-widest text-[10px] md:text-xs">
-            <Hash size={14} className="text-slate-600" />
-            <span>Master Board</span>
-          </div>
-          <div className="landscape:hidden text-[10px] font-mono text-yellow-500 font-bold">
-            {drawnNumbers.length} / 90
-          </div>
-        </header>
-
-        {/* The Grid - Dynamically fills space */}
-        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-1 md:gap-2 min-h-0">
-          {gridNumbers.map((num) => {
-            const isDrawn = drawnNumbers.includes(num);
-            const isCurrent = currentNumber === num;
-            const rhyme = rhymes[num];
-            
-            return (
-              <button
-                key={num}
-                onClick={() => handleCall(num)}
-                className={`
-                  relative flex flex-col items-center justify-center rounded-md md:rounded-lg transition-all duration-150 p-0.5
-                  ${isCurrent 
-                    ? 'bg-yellow-400 text-slate-950 ring-2 md:ring-4 ring-yellow-400/40 z-10 scale-105 shadow-lg' 
-                    : isDrawn 
-                      ? 'bg-blue-600 text-white shadow-inner' 
-                      : 'bg-slate-900 text-slate-700 border border-slate-800/50 hover:bg-slate-800 hover:text-slate-400'}
-                `}
-              >
-                <span className={`font-black leading-none ${isDrawn ? 'text-xs sm:text-sm md:text-base lg:text-lg' : 'text-xs sm:text-base md:text-lg lg:text-xl'}`}>
-                  {num}
-                </span>
-                {isDrawn && rhyme && (
-                  <span className="text-[7px] sm:text-[8px] md:text-[9px] leading-[1.1] text-center font-medium italic mt-0.5 opacity-90 line-clamp-1 max-w-full px-1">
-                    {rhyme}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Legend - Minimized */}
-        <footer className="mt-2 md:mt-4 flex justify-center gap-4 text-[9px] md:text-[10px] text-slate-600 font-bold uppercase tracking-widest flex-shrink-0">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-            <span>Called</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-            <span>Current</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 bg-slate-900 border border-slate-800 rounded-full"></div>
-            <span>Open</span>
-          </div>
-        </footer>
-      </main>
-
-      {/* Minimal Info Button */}
-      <button 
-        onClick={() => alert("Pallion Action Group Bingo!\n\n- Click 'Call Next' for a random ball.\n- Tap any number on the board to call it manually.\n- Rhymes appear on the board once a number is called.\n- Rotate for side-by-side view.")}
-        className="fixed bottom-2 right-2 md:bottom-4 md:right-4 text-slate-700 hover:text-yellow-500 transition-colors p-2"
-      >
-        <Info size={16} />
-      </button>
-    </div>
-  );
-};
-
-export default App;
+            <button 
+              onClick={resetGame} 
+              className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 p-3.5 rounded-xl text-[10px] md:text-xs font-bold uppercase text-
