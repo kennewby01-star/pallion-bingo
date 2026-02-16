@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { RefreshCw, Undo2, Play, Hash, Share2 } from 'lucide-react';
+import { RefreshCw, Undo2, Play, Share2 } from 'lucide-react';
 import confetti from 'https://cdn.skypack.dev/canvas-confetti';
 
 const TRADITIONAL_RHYMES: Record<number, string> = {
@@ -77,75 +77,65 @@ const App: React.FC = () => {
     <div className="flex flex-col landscape:flex-row h-[100dvh] w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
       
       {/* Sidebar: Caller Area */}
-      <section className="flex-shrink-0 flex flex-col items-center justify-start bg-slate-900 z-20 
-        landscape:w-56 sm:landscape:w-64 md:landscape:w-80
-        p-2 border-b landscape:border-b-0 landscape:border-r border-slate-800 shadow-2xl h-auto landscape:h-full relative">
+      <section className="flex-shrink-0 flex flex-col items-center justify-between bg-slate-900 z-20 
+        landscape:w-60 sm:landscape:w-72 md:landscape:w-80
+        p-3 border-b landscape:border-b-0 landscape:border-r border-slate-800 shadow-2xl h-auto landscape:h-full relative">
         
-        {/* BRANDING - Compacted for landscape */}
+        {/* BRANDING */}
         <div className="text-center w-full mt-1">
-          <p className="text-[6px] md:text-xs font-bold tracking-widest text-slate-500 uppercase leading-none mb-0.5">
+          <p className="text-[8px] md:text-xs font-bold tracking-[0.2em] text-slate-500 uppercase leading-none mb-1">
             Pallion Action Group
           </p>
-          <h1 className="bingo-font text-xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-500 leading-tight">
+          <h1 className="bingo-font text-2xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-500 leading-none">
             BINGO!
           </h1>
         </div>
           
-        {/* BALL AREA - Rhyme inside, optimized for tight height */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full max-h-[40vh] landscape:max-h-[50vh]">
-          <div className="relative aspect-square h-full max-h-[22vh] sm:max-h-[30vh] md:max-h-[40vh] bg-white rounded-full flex flex-col items-center justify-center border-4 md:border-[8px] border-slate-950 shadow-2xl transition-all p-2">
-            <span className="bingo-font text-5xl md:text-8xl landscape:text-[14vh] text-slate-900 tabular-nums leading-none mb-1">
+        {/* BALL AREA */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0">
+          <div className="relative aspect-square w-full max-w-[20vh] sm:max-w-[28vh] md:max-w-[40vh] bg-white rounded-full flex flex-col items-center justify-center border-4 md:border-[10px] border-slate-950 shadow-2xl transition-all p-3 md:p-6 overflow-hidden">
+            <span className="bingo-font text-5xl md:text-9xl landscape:text-[14vh] text-slate-900 tabular-nums leading-none mb-1 md:mb-2">
               {currentNumber || '--'}
             </span>
             {currentNumber && (
-              <p className="text-[7px] md:text-xl landscape:text-[2.2vh] font-black text-slate-500 italic uppercase leading-none text-center px-1">
-                {currentRhyme}
-              </p>
+              <div className="w-full text-center border-t border-slate-100 pt-1 md:pt-2">
+                <p className="text-[8px] md:text-2xl landscape:text-[2.2vh] font-black text-slate-500 italic uppercase leading-tight tracking-tight px-1">
+                  {currentRhyme}
+                </p>
+              </div>
             )}
           </div>
         </div>
 
-        {/* ACTIONS CLUSTER - Integrated directly */}
-        <div className="w-full mt-auto pb-2 space-y-2">
-          <div className="flex gap-2 justify-center w-full px-1">
-            <button onClick={undoLast} disabled={drawnNumbers.length === 0} className="flex-1 bg-slate-800 py-1.5 md:py-2.5 rounded-lg text-[8px] md:text-xs font-bold uppercase text-slate-400 flex items-center justify-center gap-1 active:bg-slate-700 disabled:opacity-20 transition-all">
-              <Undo2 size={10} className="md:w-3 md:h-3" /> Undo
+        {/* ACTIONS */}
+        <div className="w-full mt-2 landscape:mt-0 space-y-2">
+          <div className="flex gap-2 justify-center w-full">
+            <button onClick={undoLast} disabled={drawnNumbers.length === 0} className="flex-1 bg-slate-800/80 py-2 rounded-lg text-[9px] md:text-xs font-bold uppercase text-slate-400 flex items-center justify-center gap-1 active:bg-slate-700 disabled:opacity-20 transition-all">
+              <Undo2 size={12} /> Undo
             </button>
-            <button onClick={resetGame} className="flex-1 bg-slate-800 py-1.5 md:py-2.5 rounded-lg text-[8px] md:text-xs font-bold uppercase text-red-500/60 flex items-center justify-center gap-1 active:bg-red-900/20 transition-all">
-              <RefreshCw size={10} className="md:w-3 md:h-3" /> New
+            <button onClick={resetGame} className="flex-1 bg-slate-800/80 py-2 rounded-lg text-[9px] md:text-xs font-bold uppercase text-red-500/70 flex items-center justify-center gap-1 active:bg-red-900/40 transition-all">
+              <RefreshCw size={12} /> New
             </button>
           </div>
 
           <button
             onClick={drawRandom}
             disabled={drawnNumbers.length >= 90}
-            className="w-full bg-gradient-to-b from-orange-400 to-orange-600 py-3 md:py-5 rounded-xl font-black text-slate-950 text-[14px] md:text-3xl shadow-[0_3px_0_rgb(154,52,18)] active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-b from-orange-400 to-orange-600 py-4 md:py-6 rounded-xl font-black text-slate-950 text-[16px] md:text-4xl shadow-[0_4px_0_rgb(154,52,18)] active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center gap-2"
           >
-            <Play fill="currentColor" size={14} className="md:w-8 md:h-8" />
+            <Play fill="currentColor" size={18} className="md:w-10 md:h-10" />
             <span>CALL NEXT</span>
           </button>
         </div>
 
         <button onClick={shareApp} className="absolute bottom-1 left-1 p-1 opacity-20 hover:opacity-100 text-slate-400" title="Share">
-          <Share2 size={10} />
+          <Share2 size={12} />
         </button>
       </section>
 
-      {/* Main Board Area - Fixed 90 Number Scaling */}
-      <main className="flex-1 flex flex-col p-1.5 md:p-6 bg-slate-950 min-h-0 overflow-hidden">
-        
-        <header className="flex items-center justify-between mb-1.5 px-1 text-[8px] md:text-lg font-black uppercase text-slate-600 tracking-tighter landscape:tracking-widest">
-          <div className="flex items-center gap-1">
-            <Hash size={8} className="text-slate-800" />
-            <span>MASTER BOARD (1-90)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-blue-600/70">PROGRESS: <span className="text-white font-mono">{drawnNumbers.length} / 90</span></span>
-          </div>
-        </header>
-
-        {/* THE GRID - Forced to fit height and show all 90 */}
-        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-0.5 md:gap-2 place-content-center h-full max-h-[78vh] landscape:max-h-[82vh]">
+      {/* Main Board Area - 90 Numbers Maximized */}
+      <main className="flex-1 flex flex-col p-1.5 md:p-4 bg-slate-950 min-h-0">
+        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-1 md:gap-2 place-content-center h-full w-full">
           {gridNumbers.map((num) => {
             const isDrawn = drawnNumbers.includes(num);
             const isCurrent = currentNumber === num;
@@ -157,16 +147,16 @@ const App: React.FC = () => {
                 className={`
                   flex items-center justify-center aspect-square rounded-[1px] md:rounded-lg border md:border-2 transition-all
                   ${isCurrent 
-                    ? 'bg-yellow-400 border-yellow-100 text-slate-950 z-10 scale-[1.05] shadow-xl' 
+                    ? 'bg-yellow-400 border-yellow-100 text-slate-950 z-10 scale-[1.1] shadow-2xl' 
                     : isDrawn 
-                      ? 'bg-blue-600 border-blue-400 text-white' 
+                      ? 'bg-blue-600 border-blue-400 text-white shadow-inner' 
                       : 'bg-slate-900 border-slate-800 text-slate-800 hover:bg-slate-800'}
                 `}
               >
                 <span className={`font-black leading-none 
                   ${isDrawn 
-                    ? 'text-[10px] landscape:text-[2.8vh] sm:landscape:text-base md:text-3xl' 
-                    : 'text-[8px] landscape:text-[1.8vh] sm:landscape:text-xs md:text-xl opacity-20'
+                    ? 'text-[11px] landscape:text-[3.2vh] sm:landscape:text-base md:text-4xl' 
+                    : 'text-[9px] landscape:text-[2vh] sm:landscape:text-sm md:text-2xl opacity-20'
                   }`}
                 >
                   {num}
@@ -175,11 +165,6 @@ const App: React.FC = () => {
             );
           })}
         </div>
-
-        <footer className="mt-1 landscape:hidden md:flex justify-center gap-6 text-[8px] md:text-xs font-bold uppercase opacity-20 py-1">
-          <div className="flex items-center gap-1.5"><div className="w-2 h-2 bg-blue-600 rounded-full"></div><span>Called</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Active</span></div>
-        </footer>
       </main>
     </div>
   );
