@@ -76,75 +76,82 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col landscape:flex-row h-[100dvh] w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
       
-      {/* Sidebar: Controls */}
-      <section className="flex-shrink-0 flex flex-col items-center justify-center p-2 bg-slate-900 z-20 landscape:w-32 sm:landscape:w-40 md:landscape:w-72 border-b landscape:border-b-0 landscape:border-r border-slate-800">
+      {/* Sidebar: Controls (Optimized for Landscape Height) */}
+      <section className="flex-shrink-0 flex flex-col items-center justify-between p-1 md:p-5 bg-slate-900 z-20 landscape:w-36 sm:landscape:w-44 md:landscape:w-80 border-b landscape:border-b-0 landscape:border-r border-slate-800 h-auto landscape:h-full overflow-hidden">
         
-        {/* Hide Branding on small landscape to save space */}
-        <div className="landscape:hidden md:landscape:block mb-2 md:mb-6 text-center">
+        {/* Branding - Only shown on vertical or large screens */}
+        <div className="hidden landscape:hidden md:block text-center mt-2">
           <h1 className="bingo-font text-xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-500">
             BINGO!
           </h1>
         </div>
           
-        {/* Ball: Small for landscape height */}
-        <div className="flex flex-col items-center justify-center w-full min-h-0">
-          <div className="aspect-square w-16 sm:w-24 md:w-48 bg-white rounded-full flex items-center justify-center border-4 md:border-8 border-slate-950 shadow-xl landscape:w-16 sm:landscape:w-20 md:landscape:w-48 mb-1 md:mb-4">
-            <span className="bingo-font text-2xl md:text-6xl lg:text-[7rem] text-slate-900 tabular-nums">
-              {currentNumber || '--'}
-            </span>
+        {/* Main Number Ball - Aggressively sized for short screens */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 landscape:justify-start landscape:pt-2 md:landscape:justify-center">
+          <div className="relative mb-1 md:mb-6">
+            <div className="aspect-square w-16 sm:w-28 md:w-56 bg-white rounded-full flex items-center justify-center border-4 md:border-[12px] border-slate-950 shadow-2xl transition-all">
+              <span className="bingo-font text-3xl md:text-[8rem] text-slate-900 tabular-nums leading-none flex items-center justify-center">
+                {currentNumber || '--'}
+              </span>
+            </div>
           </div>
 
-          {/* Rhyme: Very compact for landscape */}
-          <div className="h-6 md:h-16 flex items-center justify-center text-center px-1 mb-2 md:mb-6">
-            {currentNumber && (
-              <p className="text-[9px] md:text-lg font-black text-orange-400 italic uppercase leading-none">
+          {/* Rhyme - Tiny on small landscape screens */}
+          <div className="h-4 md:h-20 flex items-center justify-center text-center px-1 mb-2 md:mb-6">
+            {currentNumber ? (
+              <p className="text-[10px] md:text-2xl font-black text-orange-400 italic uppercase leading-tight tracking-tight">
                 {currentRhyme}
               </p>
+            ) : (
+              <p className="text-[8px] md:text-lg text-slate-600 font-bold uppercase animate-pulse">Ready</p>
             )}
           </div>
         </div>
 
-        {/* Buttons: Shallow for landscape */}
-        <div className="w-full space-y-1 md:space-y-4 px-1">
+        {/* Action Buttons - Flat layout for landscape thumb access */}
+        <div className="w-full space-y-1 md:space-y-5 px-1 pb-1 md:pb-6">
           <button
             onClick={drawRandom}
             disabled={drawnNumbers.length >= 90}
-            className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 py-1.5 md:py-4 rounded-md md:rounded-2xl font-black text-slate-950 text-[10px] md:text-xl active:scale-95 transition-all shadow-lg"
+            className="w-full bg-gradient-to-b from-orange-400 to-orange-600 hover:from-orange-300 hover:to-orange-500 py-2 md:py-6 rounded-lg md:rounded-[2rem] font-black text-slate-950 text-xs md:text-3xl active:scale-95 transition-all shadow-[0_2px_0_rgb(154,52,18)] md:shadow-[0_8px_0_rgb(154,52,18)] flex items-center justify-center gap-1 md:gap-3"
           >
-            CALL NEXT
+            <Play fill="currentColor" className="w-3 h-3 md:w-8 md:h-8" />
+            <span>CALL NEXT</span>
           </button>
           
-          <div className="grid grid-cols-2 gap-1 md:gap-3">
+          <div className="grid grid-cols-2 gap-1 md:gap-4">
             <button 
               onClick={undoLast} 
               disabled={drawnNumbers.length === 0} 
-              className="bg-slate-800 p-1 md:p-3 rounded-md text-[8px] md:text-sm font-bold uppercase disabled:opacity-30 active:scale-95"
+              className="bg-slate-800 hover:bg-slate-700 py-1.5 md:py-4 rounded-lg text-[8px] md:text-base font-bold uppercase text-slate-300 active:bg-slate-600 transition-colors flex items-center justify-center gap-1"
             >
-              UNDO
+              <Undo2 className="w-2 h-2 md:w-4 md:h-4" /> UNDO
             </button>
             <button 
               onClick={resetGame} 
-              className="bg-red-600 p-1 md:p-3 rounded-md text-[8px] md:text-sm font-bold uppercase text-white active:scale-95"
+              className="bg-red-600 hover:bg-red-500 py-1.5 md:py-4 rounded-lg text-[8px] md:text-base font-bold uppercase text-white active:bg-red-700 transition-colors flex items-center justify-center gap-1"
             >
-              NEW
+              <RefreshCw className="w-2 h-2 md:w-4 md:h-4" /> NEW
             </button>
           </div>
         </div>
       </section>
 
-      {/* Main: Master Board */}
-      <main className="flex-1 flex flex-col p-1 md:p-6 bg-slate-950 overflow-hidden">
-        <header className="flex items-center justify-between mb-1 md:mb-4 px-1 text-[8px] md:text-xl font-black uppercase text-slate-500">
-          <div className="flex items-center gap-1 md:gap-4">
-            <Hash className="w-2.5 h-2.5 md:w-6 md:h-6" />
-            <span>Board</span>
+      {/* Main Grid: Master Board */}
+      <main className="flex-1 flex flex-col p-1.5 md:p-8 bg-slate-950 overflow-hidden">
+        {/* Compact Header */}
+        <header className="flex items-center justify-between mb-1 md:mb-6 px-1 text-[8px] md:text-2xl font-black uppercase text-slate-500 tracking-wider">
+          <div className="flex items-center gap-1.5 md:gap-4">
+            <Hash className="w-3 h-3 md:w-8 md:h-8 text-slate-700" />
+            <span>Master Board</span>
           </div>
-          <div className="flex items-center gap-2 md:gap-8">
-            <span className="text-blue-400">CALLED: <span className="text-white">{drawnNumbers.length}</span></span>
+          <div className="flex items-center gap-2 md:gap-10">
+            <span className="text-blue-500">CALLED: <span className="text-white font-mono">{drawnNumbers.length}</span></span>
           </div>
         </header>
 
-        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-0.5 md:gap-2">
+        {/* The Grid - Responds perfectly to screen size */}
+        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-0.5 md:gap-3 min-h-0">
           {gridNumbers.map((num) => {
             const isDrawn = drawnNumbers.includes(num);
             const isCurrent = currentNumber === num;
@@ -154,18 +161,18 @@ const App: React.FC = () => {
                 key={num}
                 onClick={() => handleCall(num)}
                 className={`
-                  flex items-center justify-center rounded-[2px] md:rounded-lg border md:border-2 transition-all
+                  relative flex items-center justify-center rounded-[2px] md:rounded-xl border md:border-[3px] transition-all
                   ${isCurrent 
-                    ? 'bg-yellow-400 border-yellow-200 text-slate-950 z-10 scale-105 shadow-lg' 
+                    ? 'bg-yellow-400 border-yellow-200 text-slate-950 z-10 scale-[1.08] shadow-[0_0_20px_rgba(250,204,21,0.6)]' 
                     : isDrawn 
-                      ? 'bg-blue-600 border-blue-400 text-white' 
-                      : 'bg-slate-900 border-slate-800 text-slate-700'}
+                      ? 'bg-blue-600 border-blue-400 text-white shadow-inner' 
+                      : 'bg-slate-900 border-slate-800 text-slate-700 hover:bg-slate-800 hover:text-slate-400'}
                 `}
               >
                 <span className={`font-black leading-none 
                   ${isDrawn 
-                    ? 'text-[11px] md:text-3xl' 
-                    : 'text-[9px] md:text-xl opacity-20'
+                    ? 'text-[11px] landscape:text-xs md:text-4xl' 
+                    : 'text-[9px] landscape:text-[9px] md:text-2xl opacity-20'
                   }`}
                 >
                   {num}
@@ -175,18 +182,25 @@ const App: React.FC = () => {
           })}
         </div>
 
-        <footer className="mt-1 flex justify-center gap-4 md:gap-12 text-[7px] md:text-sm font-bold uppercase opacity-60 py-1">
-          <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 md:w-3 md:h-3 bg-blue-600 rounded-sm"></div><span>Called</span></div>
-          <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 md:w-3 md:h-3 bg-yellow-400 rounded-sm"></div><span>Now</span></div>
+        {/* Key Footer */}
+        <footer className="mt-1.5 md:mt-8 flex justify-center gap-4 md:gap-20 text-[7px] md:text-lg font-bold uppercase opacity-50 py-1 md:py-4 border-t border-slate-900">
+          <div className="flex items-center gap-1 md:gap-3">
+            <div className="w-2 h-2 md:w-5 md:h-5 bg-blue-600 rounded-sm"></div>
+            <span>Called</span>
+          </div>
+          <div className="flex items-center gap-1 md:gap-3">
+            <div className="w-2 h-2 md:w-5 md:h-5 bg-yellow-400 rounded-sm"></div>
+            <span>Now</span>
+          </div>
         </footer>
       </main>
 
-      {/* Minimal Share Button */}
+      {/* Share Float (Hidden on tiny landscape) */}
       <button 
         onClick={shareApp} 
-        className="fixed bottom-1 right-1 md:bottom-6 md:right-6 bg-slate-800/80 p-2 md:p-4 rounded-full text-slate-300 border border-slate-700 z-50 landscape:hidden md:landscape:flex"
+        className="fixed bottom-2 right-2 md:bottom-10 md:right-10 bg-slate-800/90 p-2 md:p-6 rounded-full text-slate-300 border border-slate-700 z-50 hover:text-white transition-all shadow-2xl landscape:hidden sm:landscape:flex"
       >
-        <Share2 className="w-3 h-3 md:w-6 md:h-6" />
+        <Share2 className="w-3.5 h-3.5 md:w-8 md:h-8" />
       </button>
     </div>
   );
