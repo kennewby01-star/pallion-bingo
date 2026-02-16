@@ -6,10 +6,11 @@ import confetti from 'https://cdn.skypack.dev/canvas-confetti';
 
 const App: React.FC = () => {
   const [drawnNumbers, setDrawnNumbers] = useState<number[]>([]);
-  const [lingo, setLingo] = useState<string>("Ready to Call?");
+  const [rhymes, setRhymes] = useState<Record<number, string>>({});
   const [isLingoLoading, setIsLingoLoading] = useState(false);
 
   const currentNumber = drawnNumbers.length > 0 ? drawnNumbers[drawnNumbers.length - 1] : null;
+  const currentLingo = currentNumber ? rhymes[currentNumber] : "Ready to Call?";
 
   const handleCall = useCallback(async (num: number) => {
     if (drawnNumbers.includes(num)) return;
@@ -19,9 +20,9 @@ const App: React.FC = () => {
 
     try {
       const newLingo = await getBingoLingo(num);
-      setLingo(newLingo);
+      setRhymes(prev => ({ ...prev, [num]: newLingo }));
     } catch (e) {
-      setLingo(`Number ${num}`);
+      setRhymes(prev => ({ ...prev, [num]: `Number ${num}` }));
     } finally {
       setIsLingoLoading(false);
     }
@@ -42,15 +43,17 @@ const App: React.FC = () => {
 
   const undoLast = () => {
     if (drawnNumbers.length === 0) return;
+    const lastNum = drawnNumbers[drawnNumbers.length - 1];
     setDrawnNumbers(prev => prev.slice(0, -1));
-    setLingo(drawnNumbers.length > 1 ? "Last call undone" : "Ready to Call?");
+    // Optionally keep rhymes in state to avoid re-fetching if re-called, 
+    // but the user wants it to feel "undone".
     setIsLingoLoading(false);
   };
 
   const resetGame = () => {
     if (window.confirm("Start a new game? This will clear the master board.")) {
       setDrawnNumbers([]);
-      setLingo("Ready to Call?");
+      setRhymes({});
       setIsLingoLoading(false);
     }
   };
@@ -117,7 +120,7 @@ const App: React.FC = () => {
         {/* Rhyme Phrase */}
         <div className="text-center h-10 md:h-12 landscape:h-20 flex items-center justify-center px-2 mb-4">
           <p className={`text-sm md:text-base landscape:text-lg font-bold text-yellow-400 italic leading-tight transition-all duration-200 ${isLingoLoading ? 'opacity-30 blur-[1px]' : 'opacity-100'}`}>
-            {lingo}
+            {isLingoLoading ? 'Thinking...' : currentLingo}
           </p>
         </div>
 
@@ -191,13 +194,14 @@ const App: React.FC = () => {
           {gridNumbers.map((num) => {
             const isDrawn = drawnNumbers.includes(num);
             const isCurrent = currentNumber === num;
+            const rhyme = rhymes[num];
             
             return (
               <button
                 key={num}
                 onClick={() => handleCall(num)}
                 className={`
-                  relative flex items-center justify-center rounded-md md:rounded-lg text-xs sm:text-base md:text-lg lg:text-xl font-black transition-all duration-150
+                  relative flex flex-col items-center justify-center rounded-md md:rounded-lg transition-all duration-150 p-0.5
                   ${isCurrent 
                     ? 'bg-yellow-400 text-slate-950 ring-2 md:ring-4 ring-yellow-400/40 z-10 scale-105 shadow-lg' 
                     : isDrawn 
@@ -205,7 +209,14 @@ const App: React.FC = () => {
                       : 'bg-slate-900 text-slate-700 border border-slate-800/50 hover:bg-slate-800 hover:text-slate-400'}
                 `}
               >
-                {num}
+                <span className={`font-black leading-none ${isDrawn ? 'text-xs sm:text-sm md:text-base lg:text-lg' : 'text-xs sm:text-base md:text-lg lg:text-xl'}`}>
+                  {num}
+                </span>
+                {isDrawn && rhyme && (
+                  <span className="text-[7px] sm:text-[8px] md:text-[9px] leading-[1.1] text-center font-medium italic mt-0.5 opacity-90 line-clamp-1 max-w-full px-1">
+                    {rhyme}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -230,7 +241,7 @@ const App: React.FC = () => {
 
       {/* Minimal Info Button */}
       <button 
-        onClick={() => alert("Pallion Action Group Bingo!\n\n- Click 'Call Next' for a random ball.\n- Tap any number on the board to call it manually.\n- Rotate for side-by-side view.\n- No scrollbars needed!")}
+        onClick={() => alert("Pallion Action Group Bingo!\n\n- Click 'Call Next' for a random ball.\n- Tap any number on the board to call it manually.\n- Rhymes appear on the board once a number is called.\n- Rotate for side-by-side view.")}
         className="fixed bottom-2 right-2 md:bottom-4 md:right-4 text-slate-700 hover:text-yellow-500 transition-colors p-2"
       >
         <Info size={16} />
