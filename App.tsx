@@ -78,10 +78,10 @@ const App: React.FC = () => {
       
       {/* Sidebar: Caller Area */}
       <section className="flex-shrink-0 flex flex-col items-center justify-between bg-slate-900 z-20 
-        landscape:w-32 sm:landscape:w-40 md:landscape:w-80 
+        landscape:w-32 sm:landscape:w-44 md:landscape:w-80 
         p-1 md:p-4 border-b landscape:border-b-0 landscape:border-r border-slate-800 shadow-2xl h-auto landscape:h-full">
         
-        {/* BRANDING: Fixed for short screens */}
+        {/* BRANDING */}
         <div className="text-center w-full pt-1 landscape:pt-0">
           <p className="text-[6px] md:text-xs font-bold tracking-[0.2em] text-slate-400 uppercase leading-none opacity-80">
             Pallion Action Group
@@ -91,25 +91,25 @@ const App: React.FC = () => {
           </h1>
         </div>
           
-        {/* BALL AREA: Explicitly height-bound in landscape to prevent push-out */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 landscape:max-h-[50%]">
+        {/* BALL AREA: Explicitly height-bound in landscape */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 landscape:max-h-[55%]">
           <div className="relative">
-            {/* SHRUNKEN BALL: Now uses vh units to ensure it never exceeds height */}
+            {/* SHRUNKEN BALL: Size increased slightly as requested (from 18vh to 22vh) */}
             <div className="aspect-square 
-              w-12 sm:w-24 md:w-56 
-              landscape:w-[18vh] 
+              w-14 sm:w-28 md:w-56 
+              landscape:w-[22vh] 
               bg-white rounded-full flex items-center justify-center 
               border-2 md:border-8 border-slate-950 shadow-2xl transition-all">
-              <span className="bingo-font text-xl md:text-7xl landscape:text-[10vh] text-slate-900 tabular-nums leading-none">
+              <span className="bingo-font text-2xl md:text-7xl landscape:text-[12vh] text-slate-900 tabular-nums leading-none">
                 {currentNumber || '--'}
               </span>
             </div>
           </div>
 
-          {/* RHYME: Guaranteed visibility with specific height and font size */}
-          <div className="flex items-center justify-center text-center px-1 mt-1 landscape:mt-0.5 min-h-[1.5rem] landscape:h-[8vh]">
+          {/* RHYME: Size increased slightly as requested (from 2.2vh to 3vh) */}
+          <div className="flex items-center justify-center text-center px-1 mt-1 landscape:mt-1 min-h-[1.5rem] landscape:h-[10vh]">
             {currentNumber ? (
-              <p className="text-[8px] md:text-xl landscape:text-[2.2vh] font-black text-orange-400 italic uppercase leading-tight tracking-tighter">
+              <p className="text-[9px] md:text-xl landscape:text-[3vh] font-black text-orange-400 italic uppercase leading-tight tracking-tighter">
                 {currentRhyme}
               </p>
             ) : (
@@ -118,7 +118,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* ACTIONS: Compacted for landscape height */}
+        {/* ACTIONS */}
         <div className="w-full space-y-0.5 md:space-y-4 px-1 pb-1 md:pb-4">
           <button
             onClick={drawRandom}
@@ -165,7 +165,7 @@ const App: React.FC = () => {
           </div>
         </header>
 
-        {/* THE GRID: Maximized for tablet/phone */}
+        {/* THE GRID */}
         <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-0.5 md:gap-2 min-h-0">
           {gridNumbers.map((num) => {
             const isDrawn = drawnNumbers.includes(num);
@@ -197,7 +197,6 @@ const App: React.FC = () => {
           })}
         </div>
 
-        {/* Small legend for desktop/portrait */}
         <footer className="mt-1 landscape:hidden md:flex justify-center gap-10 text-[8px] md:text-xs font-bold uppercase opacity-30 py-1 border-t border-slate-900/50">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 md:w-3 md:h-3 bg-blue-600 rounded-sm"></div>
