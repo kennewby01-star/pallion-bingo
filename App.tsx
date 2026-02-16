@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { getBingoLingo } from './services/gemini';
-import { RefreshCw, Undo2, Play, Info, Hash, Loader2 } from 'lucide-react';
+import { RefreshCw, Undo2, Play, Info, Hash, Loader2, Share2 } from 'lucide-react';
 import confetti from 'https://cdn.skypack.dev/canvas-confetti';
 
 const App: React.FC = () => {
@@ -55,6 +55,23 @@ const App: React.FC = () => {
     }
   };
 
+  const shareApp = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Pallion Bingo Caller',
+          text: 'Check out the Pallion Action Group Bingo Caller!',
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error("Share failed:", err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard! Send it to your staff via text or email.");
+    }
+  };
+
   const gridNumbers = useMemo(() => Array.from({ length: 90 }, (_, i) => i + 1), []);
 
   return (
@@ -63,7 +80,19 @@ const App: React.FC = () => {
       {/* Caller Side/Top Panel */}
       <section className="flex-shrink-0 flex flex-col items-center justify-center p-4 bg-slate-900 shadow-2xl z-20 landscape:w-72 landscape:h-full border-b landscape:border-b-0 landscape:border-r border-slate-800">
         
-        <h1 className="bingo-font text-lg md:text-xl text-yellow-500 opacity-90 uppercase tracking-tighter text-center mb-2 landscape:mb-6">
+        <div className="flex items-center justify-between w-full mb-2 landscape:hidden">
+            <button onClick={shareApp} className="p-2 text-slate-400 hover:text-yellow-500">
+                <Share2 size={20} />
+            </button>
+            <h1 className="bingo-font text-lg text-yellow-500 opacity-90 uppercase tracking-tighter">
+              Pallion Action Group
+            </h1>
+            <button onClick={resetGame} className="p-2 text-slate-400 hover:text-red-500">
+                <RefreshCw size={20} />
+            </button>
+        </div>
+
+        <h1 className="hidden landscape:block bingo-font text-xl text-yellow-500 opacity-90 uppercase tracking-tighter text-center mb-6">
           Pallion Action Group
         </h1>
 
@@ -114,8 +143,15 @@ const App: React.FC = () => {
             </button>
 
             <button
+              onClick={shareApp}
+              className="hidden landscape:flex items-center justify-center gap-1 bg-slate-800 hover:bg-blue-900/40 p-2 landscape:p-3 rounded-xl transition-all active:scale-95 text-[10px] md:text-xs font-bold uppercase"
+            >
+              <Share2 size={14} />
+              Share
+            </button>
+            <button
               onClick={resetGame}
-              className="flex items-center justify-center gap-1 bg-slate-800 hover:bg-red-900/40 p-2 landscape:p-3 rounded-xl transition-all active:scale-95 text-[10px] md:text-xs font-bold uppercase"
+              className="hidden landscape:flex items-center justify-center gap-1 bg-slate-800 hover:bg-red-900/40 p-2 landscape:p-3 rounded-xl transition-all active:scale-95 text-[10px] md:text-xs font-bold uppercase"
             >
               <RefreshCw size={14} />
               Reset

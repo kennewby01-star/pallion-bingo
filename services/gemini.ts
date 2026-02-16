@@ -1,10 +1,9 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const API_KEY = process.env.API_KEY || '';
-
 export const getBingoLingo = async (num: number): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  // Initialize inside the function to ensure the latest API key is used
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   // Minimalist prompt to reduce generation time and latency
   const prompt = `Bingo number ${num}. Short classic rhyme/nickname only. No quotes. Max 4 words.`;
@@ -22,6 +21,7 @@ export const getBingoLingo = async (num: number): Promise<string> => {
     return response.text.trim() || `Number ${num}`;
   } catch (error) {
     console.error("Gemini Lingo Error:", error);
+    // If the error is "Requested entity was not found", it usually means an API key issue
     return `Number ${num}`;
   }
 };
