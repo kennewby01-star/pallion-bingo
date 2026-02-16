@@ -71,6 +71,7 @@ const App: React.FC = () => {
     }
   };
 
+  // Strictly 1-90
   const gridNumbers = useMemo(() => Array.from({ length: 90 }, (_, i) => i + 1), []);
 
   return (
@@ -79,7 +80,7 @@ const App: React.FC = () => {
       {/* Sidebar: Caller Area */}
       <section className="flex-shrink-0 flex flex-col items-center justify-start bg-slate-900 z-20 
         landscape:w-56 sm:landscape:w-72 md:landscape:w-96 
-        landscape:gap-y-[2vh] p-2 md:p-6 border-b landscape:border-b-0 landscape:border-r border-slate-800 shadow-2xl h-auto landscape:h-full relative">
+        landscape:gap-y-[1vh] p-2 md:p-6 border-b landscape:border-b-0 landscape:border-r border-slate-800 shadow-2xl h-auto landscape:h-full relative">
         
         {/* BRANDING */}
         <div className="text-center w-full landscape:h-[8vh] flex flex-col justify-center">
@@ -91,90 +92,88 @@ const App: React.FC = () => {
           </h1>
         </div>
           
-        {/* BALL AREA */}
-        <div className="flex flex-col items-center justify-center w-full landscape:h-[55vh]">
+        {/* BALL AREA - Rhyme inside the white circle */}
+        <div className="flex flex-col items-center justify-center w-full landscape:h-[50vh] mt-1 landscape:mt-0">
           <div className="relative">
             <div className="aspect-square 
-              w-20 sm:w-32 md:w-64 
-              landscape:h-[46vh] landscape:w-[46vh]
-              bg-white rounded-full flex items-center justify-center 
-              border-4 md:border-[12px] border-slate-950 shadow-[0_0_40px_rgba(0,0,0,0.5)] transition-all">
-              <span className="bingo-font text-4xl md:text-9xl landscape:text-[24vh] text-slate-900 tabular-nums leading-none translate-y-[-0.5vh]">
+              w-24 sm:w-36 md:w-64 
+              landscape:h-[42vh] landscape:w-[42vh]
+              bg-white rounded-full flex flex-col items-center justify-center 
+              border-4 md:border-[10px] border-slate-950 shadow-[0_0_40px_rgba(0,0,0,0.5)] transition-all overflow-hidden p-3">
+              
+              <span className="bingo-font text-5xl md:text-9xl landscape:text-[20vh] text-slate-900 tabular-nums leading-none">
                 {currentNumber || '--'}
               </span>
+
+              {currentNumber && (
+                <div className="w-full text-center border-t border-slate-100 mt-1 md:mt-2 pt-1 md:pt-2">
+                  <p className="text-[9px] md:text-2xl landscape:text-[3.5vh] font-black text-slate-600 italic uppercase leading-none tracking-tight">
+                    {currentRhyme}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* RHYME */}
-        <div className="flex items-center justify-center text-center px-2 landscape:h-[10vh]">
-          {currentNumber ? (
-            <p className="text-[12px] md:text-3xl landscape:text-[7vh] font-black text-orange-400 italic uppercase leading-none tracking-tighter drop-shadow-lg">
-              {currentRhyme}
-            </p>
-          ) : (
-            <p className="text-[10px] md:text-sm text-slate-600 font-bold uppercase tracking-widest animate-pulse">Ready</p>
-          )}
-        </div>
+        {/* ACTIONS CLUSTER - Undo/New Game ABOVE the big Call button */}
+        <div className="w-full mt-2 landscape:mt-auto landscape:pb-[2vh] space-y-2">
+          <div className="flex gap-2 justify-center w-full px-1">
+            <button 
+              onClick={undoLast} 
+              disabled={drawnNumbers.length === 0} 
+              className="flex-1 bg-slate-800/50 py-1.5 md:py-2.5 rounded-lg text-[8px] md:text-xs font-bold uppercase text-slate-400 flex items-center justify-center gap-1 active:bg-slate-700 disabled:opacity-20 transition-all"
+            >
+              <Undo2 size={10} className="md:w-4 md:h-4" /> Undo
+            </button>
+            <button 
+              onClick={resetGame} 
+              className="flex-1 bg-slate-800/50 py-1.5 md:py-2.5 rounded-lg text-[8px] md:text-xs font-bold uppercase text-red-500/60 flex items-center justify-center gap-1 active:bg-red-900/20 transition-all"
+            >
+              <RefreshCw size={10} className="md:w-4 md:h-4" /> New Game
+            </button>
+          </div>
 
-        {/* ACTIONS */}
-        <div className="w-full space-y-1 md:space-y-4 px-1 landscape:mt-auto landscape:pb-[2vh]">
           <button
             onClick={drawRandom}
             disabled={drawnNumbers.length >= 90}
             className="w-full bg-gradient-to-b from-orange-400 to-orange-600 
-              py-2 md:py-6 
-              rounded-lg md:rounded-2xl font-black text-slate-950 
-              text-[14px] landscape:text-[4vh] md:text-3xl 
+              py-3 md:py-6 
+              rounded-xl md:rounded-2xl font-black text-slate-950 
+              text-[16px] landscape:text-[4.5vh] md:text-4xl 
               shadow-[0_2px_0_rgb(154,52,18)] md:shadow-[0_8px_0_rgb(154,52,18)]
               active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center gap-2"
           >
-            <Play fill="currentColor" size={14} className="md:w-8 md:h-8" />
-            <span>CALL</span>
+            <Play fill="currentColor" size={16} className="md:w-10 md:h-10" />
+            <span>CALL NEXT</span>
           </button>
-          
-          <div className="grid grid-cols-2 gap-1 md:gap-4">
-            <button 
-              onClick={undoLast} 
-              disabled={drawnNumbers.length === 0} 
-              className="bg-slate-800 py-1.5 md:py-4 rounded-lg text-[9px] md:text-base font-bold uppercase text-slate-300 flex items-center justify-center gap-1 active:bg-slate-700 active:text-white"
-            >
-              <Undo2 size={10} /> UNDO
-            </button>
-            <button 
-              onClick={resetGame} 
-              className="bg-red-600 py-1.5 md:py-4 rounded-lg text-[9px] md:text-base font-bold uppercase text-white flex items-center justify-center gap-1 active:bg-red-700 active:scale-95"
-            >
-              <RefreshCw size={10} /> NEW
-            </button>
-          </div>
         </div>
 
-        {/* SMALL SHARE BUTTON - Bottom Left of Sidebar */}
+        {/* MINIMAL SHARE BUTTON - Bottom Left */}
         <button 
           onClick={shareApp} 
-          className="absolute bottom-2 left-2 p-1.5 rounded-md bg-slate-800/50 hover:bg-slate-700 text-slate-500 hover:text-slate-300 transition-colors"
-          title="Share App"
+          className="absolute bottom-1 left-1 p-1 rounded-md opacity-20 hover:opacity-100 text-slate-400 transition-opacity"
+          title="Share"
         >
-          <Share2 size={14} />
+          <Share2 size={10} />
         </button>
       </section>
 
-      {/* Main Board Area */}
-      <main className="flex-1 flex flex-col p-2 md:p-8 bg-slate-950 overflow-hidden">
+      {/* Main Board Area - 90 Numbers (10x9 Grid) */}
+      <main className="flex-1 flex flex-col p-1.5 md:p-8 bg-slate-950 overflow-hidden">
         
-        <header className="flex items-center justify-between mb-1 md:mb-6 px-1 text-[8px] md:text-2xl font-black uppercase text-slate-500 tracking-widest">
+        <header className="flex items-center justify-between mb-1 md:mb-6 px-1 text-[8px] md:text-xl font-black uppercase text-slate-600 tracking-widest">
           <div className="flex items-center gap-2">
-            <Hash size={10} className="md:w-8 md:h-8 text-slate-700" />
-            <span className="opacity-70">BOARD</span>
+            <Hash size={8} className="md:w-6 md:h-6 text-slate-800" />
+            <span className="opacity-50">MASTER BOARD (1-90)</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-blue-500 uppercase">CALLED: <span className="text-white font-mono">{drawnNumbers.length}</span></span>
+            <span className="text-blue-600/70">PROGRESS: <span className="text-white font-mono">{drawnNumbers.length} / 90</span></span>
           </div>
         </header>
 
-        {/* THE GRID - aspect-square ensures they stay as BOXES */}
-        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-1 md:gap-3 place-content-center">
+        {/* THE GRID - 10 Columns, 9 Rows for all 90 numbers */}
+        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-1 md:gap-2.5 place-content-center h-full">
           {gridNumbers.map((num) => {
             const isDrawn = drawnNumbers.includes(num);
             const isCurrent = currentNumber === num;
@@ -184,18 +183,18 @@ const App: React.FC = () => {
                 key={num}
                 onClick={() => handleCall(num)}
                 className={`
-                  flex items-center justify-center aspect-square rounded-[2px] md:rounded-xl border md:border-2 transition-all
+                  flex items-center justify-center aspect-square rounded-[1px] md:rounded-xl border md:border-2 transition-all
                   ${isCurrent 
-                    ? 'bg-yellow-400 border-yellow-100 text-slate-950 z-10 scale-[1.05] shadow-xl shadow-yellow-500/40' 
+                    ? 'bg-yellow-400 border-yellow-100 text-slate-950 z-10 scale-[1.1] shadow-2xl shadow-yellow-500/50' 
                     : isDrawn 
                       ? 'bg-blue-600 border-blue-400 text-white shadow-inner' 
-                      : 'bg-slate-900 border-slate-800 text-slate-700 hover:bg-slate-800'}
+                      : 'bg-slate-900 border-slate-800 text-slate-800 hover:bg-slate-800'}
                 `}
               >
                 <span className={`font-black leading-none 
                   ${isDrawn 
-                    ? 'text-[12px] landscape:text-[3.5vh] sm:landscape:text-lg md:text-4xl' 
-                    : 'text-[10px] landscape:text-[2.2vh] sm:landscape:text-sm md:text-2xl opacity-20'
+                    ? 'text-[11px] landscape:text-[3.2vh] sm:landscape:text-lg md:text-3xl' 
+                    : 'text-[9px] landscape:text-[2vh] sm:landscape:text-sm md:text-xl opacity-20'
                   }`}
                 >
                   {num}
@@ -205,13 +204,13 @@ const App: React.FC = () => {
           })}
         </div>
 
-        <footer className="mt-2 landscape:hidden md:flex justify-center gap-12 text-[10px] md:text-sm font-bold uppercase opacity-30 py-2 border-t border-slate-900/50">
+        <footer className="mt-1 landscape:hidden md:flex justify-center gap-8 text-[8px] md:text-xs font-bold uppercase opacity-20 py-1 border-t border-slate-900">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 md:w-4 md:h-4 bg-blue-600 rounded-sm"></div>
+            <div className="w-2 h-2 md:w-3 md:h-3 bg-blue-600 rounded-full"></div>
             <span>Called</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 md:w-4 md:h-4 bg-yellow-400 rounded-sm"></div>
+            <div className="w-2 h-2 md:w-3 md:h-3 bg-yellow-400 rounded-full"></div>
             <span>Active</span>
           </div>
         </footer>
