@@ -3,7 +3,6 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { RefreshCw, Undo2, Play, Hash, Share2 } from 'lucide-react';
 import confetti from 'https://cdn.skypack.dev/canvas-confetti';
 
-// Hardcoded rhymes to ensure they work instantly
 const TRADITIONAL_RHYMES: Record<number, string> = {
   1: "Kelly's Eye", 2: "One Little Duck", 3: "Cup of Tea", 4: "Knock at the Door", 5: "Man Alive",
   6: "Tom Mix", 7: "Lucky Seven", 8: "Garden Gate", 9: "Doctor's Orders", 10: "Mr Ben",
@@ -36,12 +35,7 @@ const App: React.FC = () => {
     setDrawnNumbers(prev => [...prev, num]);
     
     if (drawnNumbers.length === 89) {
-      confetti({ 
-        particleCount: 150, 
-        spread: 70, 
-        origin: { y: 0.6 },
-        colors: ['#ffb347', '#ff4b2b', '#ffffff', '#3b82f6']
-      });
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
   }, [drawnNumbers]);
 
@@ -60,13 +54,9 @@ const App: React.FC = () => {
   };
 
   const resetGame = () => {
-    setDrawnNumbers([]);
-    confetti({
-      particleCount: 40,
-      spread: 60,
-      origin: { y: 0.7 },
-      colors: ['#ef4444', '#ffffff']
-    });
+    if (confirm("Start a new game?")) {
+      setDrawnNumbers([]);
+    }
   };
 
   const shareApp = async () => {
@@ -78,9 +68,6 @@ const App: React.FC = () => {
           url: window.location.href,
         });
       } catch (err) { console.error(err); }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert("Link copied!");
     }
   };
 
@@ -89,91 +76,75 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col landscape:flex-row h-[100dvh] w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
       
-      {/* Side Panel: The Caller (Left/Top) */}
-      <section className="flex-shrink-0 flex flex-col items-center justify-between p-2 md:p-5 bg-slate-900 shadow-2xl z-20 landscape:w-36 sm:landscape:w-44 md:landscape:w-72 lg:landscape:w-[26rem] border-b landscape:border-b-0 landscape:border-r border-slate-800 h-auto landscape:h-full">
+      {/* Sidebar: Controls */}
+      <section className="flex-shrink-0 flex flex-col items-center justify-center p-2 bg-slate-900 z-20 landscape:w-32 sm:landscape:w-40 md:landscape:w-72 border-b landscape:border-b-0 landscape:border-r border-slate-800">
         
-        {/* Compact Branding Header for Landscape */}
-        <div className="w-full text-center flex-shrink-0 pt-0.5 md:pt-4">
-          <h2 className="hidden landscape:hidden md:block text-[9px] md:text-lg lg:text-2xl font-black text-white uppercase tracking-widest opacity-80 leading-none mb-1">
-            PALLION
-          </h2>
-          <h1 className="bingo-font text-xl md:text-5xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-500 uppercase tracking-tighter drop-shadow-md landscape:text-lg sm:landscape:text-2xl md:landscape:text-5xl">
+        {/* Hide Branding on small landscape to save space */}
+        <div className="landscape:hidden md:landscape:block mb-2 md:mb-6 text-center">
+          <h1 className="bingo-font text-xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-red-500">
             BINGO!
           </h1>
         </div>
           
-        {/* Main Number Display (Bingo Ball) - Aggressively scaled for landscape heights */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 py-1">
-          <div className="relative mb-1 md:mb-4 flex-shrink-0">
-            <div className="aspect-square w-16 sm:w-20 md:w-44 lg:w-72 bg-white rounded-full flex items-center justify-center border-[2px] md:border-[10px] lg:border-[16px] border-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all landscape:w-14 sm:landscape:w-20 md:landscape:w-44">
-              <span className="bingo-font text-2xl md:text-[6rem] lg:text-[9rem] text-slate-900 tabular-nums leading-none pt-0.5 landscape:text-xl sm:landscape:text-3xl md:landscape:text-[6rem]">
-                {currentNumber || '--'}
-              </span>
-            </div>
+        {/* Ball: Small for landscape height */}
+        <div className="flex flex-col items-center justify-center w-full min-h-0">
+          <div className="aspect-square w-16 sm:w-24 md:w-48 bg-white rounded-full flex items-center justify-center border-4 md:border-8 border-slate-950 shadow-xl landscape:w-16 sm:landscape:w-20 md:landscape:w-48 mb-1 md:mb-4">
+            <span className="bingo-font text-2xl md:text-6xl lg:text-[7rem] text-slate-900 tabular-nums">
+              {currentNumber || '--'}
+            </span>
           </div>
 
-          {/* Rhyme Section - Slimmed down for small screens */}
-          <div className="px-1 w-full flex flex-col items-center justify-center text-center h-8 md:h-24">
-            {currentNumber ? (
-              <div className="animate-in fade-in zoom-in duration-200 w-full">
-                <div className="bg-slate-800/95 px-1.5 py-0.5 md:px-5 md:py-2 rounded-md md:rounded-2xl border border-slate-700 shadow-xl inline-block w-full">
-                  <p className="text-[8px] md:text-xl lg:text-2xl font-black text-white italic leading-tight uppercase landscape:text-[7px] sm:landscape:text-[10px] md:landscape:text-xl">
-                    {currentRhyme}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="text-slate-600 font-bold uppercase text-[7px] md:text-base tracking-tighter md:tracking-[0.2em] animate-pulse">
-                GO!
-              </div>
+          {/* Rhyme: Very compact for landscape */}
+          <div className="h-6 md:h-16 flex items-center justify-center text-center px-1 mb-2 md:mb-6">
+            {currentNumber && (
+              <p className="text-[9px] md:text-lg font-black text-orange-400 italic uppercase leading-none">
+                {currentRhyme}
+              </p>
             )}
           </div>
         </div>
 
-        {/* Buttons Section - More vertical space preservation */}
-        <div className="w-full space-y-1 md:space-y-4 pb-2 md:pb-6 flex-shrink-0 px-1 md:px-4 lg:px-8">
+        {/* Buttons: Shallow for landscape */}
+        <div className="w-full space-y-1 md:space-y-4 px-1">
           <button
             onClick={drawRandom}
             disabled={drawnNumbers.length >= 90}
-            className="w-full flex items-center justify-center gap-1 md:gap-4 bg-gradient-to-r from-orange-500 to-yellow-500 p-1.5 md:py-4 md:px-6 lg:py-6 lg:px-10 rounded-md md:rounded-3xl lg:rounded-[2.5rem] font-black text-slate-950 text-xs md:text-2xl lg:text-4xl shadow-[0_1px_0_rgb(154,52,18)] md:shadow-[0_6px_0_rgb(154,52,18)] active:translate-y-0.5 active:shadow-none transition-all outline-none landscape:py-1.5 landscape:text-[10px] sm:landscape:text-xs md:landscape:text-2xl"
+            className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 py-1.5 md:py-4 rounded-md md:rounded-2xl font-black text-slate-950 text-[10px] md:text-xl active:scale-95 transition-all shadow-lg"
           >
-            <Play fill="currentColor" className="w-2.5 h-2.5 md:w-6 md:h-6 lg:w-8 lg:h-8" />
-            <span>CALL NEXT</span>
+            CALL NEXT
           </button>
           
           <div className="grid grid-cols-2 gap-1 md:gap-3">
             <button 
               onClick={undoLast} 
               disabled={drawnNumbers.length === 0} 
-              className="flex items-center justify-center gap-1 bg-slate-800 p-1 md:p-3 rounded-md text-[7px] md:text-base font-bold uppercase disabled:opacity-30 active:scale-95 transition-all"
+              className="bg-slate-800 p-1 md:p-3 rounded-md text-[8px] md:text-sm font-bold uppercase disabled:opacity-30 active:scale-95"
             >
-              <Undo2 className="w-2 h-2 md:w-4 md:h-4" /> UNDO
+              UNDO
             </button>
             <button 
               onClick={resetGame} 
-              className="flex items-center justify-center gap-1 bg-red-600 p-1 md:p-3 rounded-md text-[7px] md:text-base font-bold uppercase text-white active:scale-95 transition-all"
+              className="bg-red-600 p-1 md:p-3 rounded-md text-[8px] md:text-sm font-bold uppercase text-white active:scale-95"
             >
-              <RefreshCw className="w-2 h-2 md:w-4 md:h-4" /> NEW
+              NEW
             </button>
           </div>
         </div>
       </section>
 
-      {/* Main Panel: The Master Board (Right Grid) */}
-      <main className="flex-1 flex flex-col p-1 md:p-4 lg:p-10 bg-slate-950 overflow-hidden">
-        {/* Board Header - Slimmer for mobile */}
-        <header className="flex items-center justify-between mb-1 md:mb-4 lg:mb-8 px-1 text-[7px] md:text-lg lg:text-2xl font-black uppercase text-slate-500 flex-shrink-0">
+      {/* Main: Master Board */}
+      <main className="flex-1 flex flex-col p-1 md:p-6 bg-slate-950 overflow-hidden">
+        <header className="flex items-center justify-between mb-1 md:mb-4 px-1 text-[8px] md:text-xl font-black uppercase text-slate-500">
           <div className="flex items-center gap-1 md:gap-4">
-            <Hash className="text-slate-600 w-2.5 h-2.5 md:w-6 md:h-6" />
+            <Hash className="w-2.5 h-2.5 md:w-6 md:h-6" />
             <span>Board</span>
           </div>
-          <div className="flex items-center gap-1 md:gap-8">
-            <span className="text-blue-400">CALLED: <span className="text-white font-mono">{drawnNumbers.length}</span></span>
+          <div className="flex items-center gap-2 md:gap-8">
+            <span className="text-blue-400">CALLED: <span className="text-white">{drawnNumbers.length}</span></span>
           </div>
         </header>
 
-        {/* Master Board Grid - Highly responsive font sizes */}
-        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-0.5 md:gap-2 lg:gap-3 min-h-0">
+        <div className="flex-1 grid grid-cols-10 grid-rows-9 gap-0.5 md:gap-2">
           {gridNumbers.map((num) => {
             const isDrawn = drawnNumbers.includes(num);
             const isCurrent = currentNumber === num;
@@ -183,18 +154,18 @@ const App: React.FC = () => {
                 key={num}
                 onClick={() => handleCall(num)}
                 className={`
-                  relative flex items-center justify-center rounded-[2px] md:rounded-lg lg:rounded-xl transition-all border md:border-2
+                  flex items-center justify-center rounded-[2px] md:rounded-lg border md:border-2 transition-all
                   ${isCurrent 
-                    ? 'bg-yellow-400 border-yellow-200 text-slate-950 ring-1 md:ring-4 lg:ring-[8px] ring-yellow-400/50 z-10 scale-[1.05]' 
+                    ? 'bg-yellow-400 border-yellow-200 text-slate-950 z-10 scale-105 shadow-lg' 
                     : isDrawn 
-                      ? 'bg-blue-600 border-blue-400 text-white shadow-inner' 
-                      : 'bg-slate-900 border-slate-800 text-slate-700 hover:bg-slate-800'}
+                      ? 'bg-blue-600 border-blue-400 text-white' 
+                      : 'bg-slate-900 border-slate-800 text-slate-700'}
                 `}
               >
                 <span className={`font-black leading-none 
                   ${isDrawn 
-                    ? 'text-[10px] landscape:text-sm sm:landscape:text-base md:text-2xl lg:text-4xl' 
-                    : 'text-[8px] landscape:text-[10px] sm:landscape:text-xs md:text-xl lg:text-3xl opacity-20'
+                    ? 'text-[11px] md:text-3xl' 
+                    : 'text-[9px] md:text-xl opacity-20'
                   }`}
                 >
                   {num}
@@ -204,25 +175,18 @@ const App: React.FC = () => {
           })}
         </div>
 
-        {/* Legend Footer - Simplified for small screens */}
-        <footer className="mt-1 flex justify-center gap-2 md:gap-12 lg:gap-32 text-[6px] md:text-base font-bold uppercase opacity-80 flex-shrink-0 py-1 md:py-6 border-t border-slate-900/50">
-          <div className="flex items-center gap-1">
-            <div className="w-1.5 h-1.5 md:w-5 md:h-5 bg-blue-600 rounded-sm border border-blue-400"></div>
-            <span>Called</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-1.5 h-1.5 md:w-5 md:h-5 bg-yellow-400 rounded-sm border border-yellow-200"></div>
-            <span>Now</span>
-          </div>
+        <footer className="mt-1 flex justify-center gap-4 md:gap-12 text-[7px] md:text-sm font-bold uppercase opacity-60 py-1">
+          <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 md:w-3 md:h-3 bg-blue-600 rounded-sm"></div><span>Called</span></div>
+          <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 md:w-3 md:h-3 bg-yellow-400 rounded-sm"></div><span>Now</span></div>
         </footer>
       </main>
 
-      {/* Share Button (Hidden on very small landscape screens to save space) */}
+      {/* Minimal Share Button */}
       <button 
         onClick={shareApp} 
-        className="fixed bottom-2 right-2 md:bottom-8 md:right-8 bg-slate-800/95 p-2 md:p-6 rounded-full text-slate-300 shadow-2xl border border-slate-700 z-50 landscape:hidden sm:landscape:flex"
+        className="fixed bottom-1 right-1 md:bottom-6 md:right-6 bg-slate-800/80 p-2 md:p-4 rounded-full text-slate-300 border border-slate-700 z-50 landscape:hidden md:landscape:flex"
       >
-        <Share2 className="w-3 h-3 md:w-8 md:h-8" />
+        <Share2 className="w-3 h-3 md:w-6 md:h-6" />
       </button>
     </div>
   );
