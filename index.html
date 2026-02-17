@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pallion Action Group BINGO!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>PAG BINGO - Sunderland Edition</title>
     <style>
         :root {
             --bg: #020617;
@@ -12,300 +12,169 @@
             --danger: #ef4444;
             --text: #f8fafc;
             --muted: #475569;
+            --success: #22c55e;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: system-ui, -apple-system, sans-serif;
-            margin: 0;
-            padding: 10px;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
-            height: 100vh;
             overflow: hidden;
+            padding: 10px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
+            padding: 5px 10px;
             border-bottom: 2px solid #1e293b;
+            flex-shrink: 0;
+            height: 50px;
         }
 
         h1 { 
-            margin: 0; 
-            font-size: 1.8rem; 
+            font-size: clamp(1rem, 4vw, 1.4rem);
             color: var(--primary); 
             font-weight: 900; 
-            line-height: 1.1;
             text-transform: uppercase;
         }
 
-        .main {
+        #counter { 
+            font-weight: 900; 
+            font-size: 0.9rem;
+            background: #1e293b; 
+            padding: 4px 12px; 
+            border-radius: 15px;
+            color: var(--primary);
+        }
+
+        .main-container {
             display: flex;
             flex: 1;
             gap: 15px;
-            padding: 15px 0;
+            padding-top: 10px;
             min-height: 0;
+            overflow: hidden;
         }
 
-        /* Left side: The Ball and Buttons */
-        .controls {
-            flex: 1;
+        /* Controls Panel */
+        .controls-panel {
+            flex: 0 0 300px;
             background: var(--panel);
-            border-radius: 12px;
+            border-radius: 20px;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid #1e293b;
+            border: 2px solid #1e293b;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            height: 100%;
         }
 
-        .ball-display {
-            width: 150px;
-            height: 150px;
-            background: #000;
+        .ball-outer {
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle at 30% 30%, #334155, #000);
             border-radius: 50%;
-            border: 5px solid var(--primary);
+            border: 6px solid var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 70px;
             font-weight: 900;
             color: white;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+            flex-shrink: 0;
         }
 
-        .rhyme {
-            height: 3rem;
+        .rhyme-text {
+            flex: 1;
             text-align: center;
-            font-style: italic;
             color: var(--primary);
-            font-weight: 600;
-            margin-top: 15px;
+            font-weight: 700;
             font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            line-height: 1.2;
+            font-style: italic;
         }
 
-        .button-group {
+        .action-group {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
-        button {
-            border: none;
-            border-radius: 8px;
-            padding: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: transform 0.1s;
-        }
-
-        button:active { transform: scale(0.98); }
-
-        #draw-btn {
+        .draw-button {
             background: var(--primary);
             color: var(--bg);
-            font-size: 1.2rem;
-            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #0284c7;
+            transition: all 0.1s;
         }
 
-        #draw-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .draw-button:active { transform: translateY(2px); box-shadow: 0 2px 0 #0284c7; }
+        .draw-button:disabled { opacity: 0.2; filter: grayscale(1); transform: none; box-shadow: none; }
 
-        .sub-btns {
+        .btn-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .btn-reset { background: var(--danger); color: white; }
-        .btn-undo { background: var(--muted); color: white; }
-
-        /* Right side: The Grid */
-        .board {
-            flex: 1.5;
-            background: var(--panel);
-            border-radius: 12px;
+        .small-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
             padding: 10px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-voice.active { background: var(--success); color: var(--bg); }
+        .btn-new-game { background: var(--danger); grid-column: span 2; }
+
+        /* Board Panel */
+        .board-panel {
+            flex: 1;
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 8px;
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             grid-template-rows: repeat(9, 1fr);
             gap: 4px;
-            border: 1px solid #1e293b;
+            border: 2px solid #1e293b;
+            height: 100%;
         }
 
         .cell {
-            background: rgba(0,0,0,0.2);
+            background: rgba(15, 23, 42, 0.6);
             border: 1px solid #1e293b;
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            color: #334155;
-        }
-
-        .cell.active {
-            background: rgba(56, 189, 248, 0.2);
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .cell.latest {
-            background: var(--primary);
-            color: var(--bg);
-            transform: scale(1.1);
-            z-index: 5;
-        }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 1.3rem; }
-            .main { flex-direction: column; }
-            .board { grid-template-columns: repeat(9, 1fr); }
-            .ball-display { width: 100px; height: 100px; font-size: 40px; }
-        }
-    </style>
-<link rel="stylesheet" href="/index.css">
-</head>
-<body>
-
-    <header>
-        <h1>Pallion Action Group BINGO!</h1>
-        <div id="counter" style="font-weight: 800; color: var(--muted);">Called: 0/90</div>
-    </header>
-
-    <div class="main">
-        <div class="controls">
-            <div id="ball-box" class="ball-display">--</div>
-            <div id="rhyme-box" class="rhyme">Ready to play?</div>
-            
-            <div class="button-group">
-                <button id="draw-btn" onclick="draw()">Draw Number</button>
-                <div class="sub-btns">
-                    <button class="btn-undo" onclick="undo()">Undo</button>
-                    <button class="btn-reset" onclick="reset()">New Game</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="board" class="board"></div>
-    </div>
-
-    <script>
-        const RHYMES = {
-            1: "Kelly's Eye", 2: "One Little Duck", 3: "Cup of Tea", 4: "Knock at the Door", 5: "Man Alive",
-            6: "Tom Mix", 7: "Lucky Seven", 8: "Garden Gate", 9: "Doctor's Orders", 10: "Uncle Ben",
-            11: "Legs Eleven", 12: "One Dozen", 13: "Unlucky for Some", 14: "Valentine's Day", 15: "Young and Keen",
-            16: "Sweet Sixteen", 17: "Dancing Queen", 18: "Coming of Age", 19: "Goodbye Teens", 20: "One Score",
-            21: "Royal Salute", 22: "Two Little Ducks", 23: "Thee and Me", 24: "Two Dozen", 25: "Duck and Dive",
-            26: "Pick and Mix", 27: "Gateway to Heaven", 28: "Overweight", 29: "Rise and Shine", 30: "Dirty Gertie",
-            31: "Get Up and Run", 32: "Buckle My Shoe", 33: "Dirty Knee", 34: "Ask for More", 35: "Jump and Jive",
-            36: "Three Dozen", 37: "More than 11", 38: "Christmas Cake", 39: "Steps", 40: "Life Begins",
-            41: "Time for Fun", 42: "Winnie the Pooh", 43: "Down on Your Knee", 44: "Droopy Drawers", 45: "Halfway There",
-            46: "Up to Tricks", 47: "Four and Seven", 48: "Four Dozen", 49: "PC 49", 50: "Half a Century",
-            51: "Tweak of the Thumb", 52: "Weeks in a Year", 53: "Stuck in the Tree", 54: "Clean the Floor", 55: "Snakes Alive",
-            56: "Was She Worth It?", 57: "Heinz Varieties", 58: "Make Them Wait", 59: "Brighton Line", 60: "Five Dozen",
-            61: "Bakers Bun", 62: "Turn on the Screw", 63: "Tickle Me 63", 64: "Red Raw", 65: "Old Age Pension",
-            66: "Clickety Click", 67: "Made in Heaven", 68: "Saving Grace", 69: "Either Way Up", 70: "Three Score and Ten",
-            71: "Bang on the Drum", 72: "Six Dozen", 73: "Queen B", 74: "Candy Store", 75: "Strive and Strive",
-            76: "Trombones", 77: "Sunset Strip", 78: "Heaven's Gate", 79: "One More Time", 80: "Eight and Blank",
-            81: "Stop and Run", 82: "Straight on Through", 83: "Time for Tea", 84: "Seven Dozen", 85: "Staying Alive",
-            86: "Between the Sticks", 87: "Torquay in Devon", 88: "Two Fat Ladies", 89: "Nearly There", 90: "Top of the Shop"
-        };
-
-        let drawn = [];
-        let timer = null;
-
-        function init() {
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-            for (let i = 1; i <= 90; i++) {
-                const div = document.createElement('div');
-                div.id = 'cell-' + i;
-                div.className = 'cell';
-                div.innerText = i;
-                board.appendChild(div);
-            }
-            update();
-        }
-
-        function draw() {
-            if (drawn.length >= 90 || timer) return;
-
-            const btn = document.getElementById('draw-btn');
-            const ball = document.getElementById('ball-box');
-            btn.disabled = true;
-
-            let count = 0;
-            timer = setInterval(() => {
-                ball.innerText = Math.floor(Math.random() * 90) + 1;
-                count++;
-                if (count > 10) {
-                    clearInterval(timer);
-                    timer = null;
-                    completeDraw();
-                }
-            }, 50);
-        }
-
-        function completeDraw() {
-            const pool = [];
-            for (let i = 1; i <= 90; i++) {
-                if (!drawn.includes(i)) pool.push(i);
-            }
-            
-            const picked = pool[Math.floor(Math.random() * pool.length)];
-            drawn.push(picked);
-            update();
-            document.getElementById('draw-btn').disabled = (drawn.length >= 90);
-        }
-
-        function undo() {
-            if (timer) return;
-            drawn.pop();
-            update();
-        }
-
-        function reset() {
-            if (timer) {
-                clearInterval(timer);
-                timer = null;
-            }
-            drawn = [];
-            update();
-            console.log("Game Reset Complete.");
-        }
-
-        function update() {
-            const countLabel = document.getElementById('counter');
-            const ball = document.getElementById('ball-box');
-            const rhyme = document.getElementById('rhyme-box');
-            const last = drawn.length > 0 ? drawn[drawn.length - 1] : null;
-
-            countLabel.innerText = `Called: ${drawn.length}/90`;
-            ball.innerText = last || '--';
-            rhyme.innerText = last ? `"${RHYMES[last]}"` : "Ready to play?";
-
-            for (let i = 1; i <= 90; i++) {
-                const cell = document.getElementById('cell-' + i);
-                cell.classList.remove('active', 'latest');
-                if (drawn.includes(i)) {
-                    cell.classList.add('active');
-                    if (i === last) cell.classList.add('latest');
-                }
-            }
-
-            document.getElementById('draw-btn').disabled = (drawn.length >= 90);
-        }
-
-        init();
-    </script>
-<script type="module" src="/index.tsx"></script>
-</body>
-</html>
+            font-size: 1rem;
+            font-weight: 

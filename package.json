@@ -1,12 +1,8 @@
 {
   "name": "pallion-bingo-caller",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "start": "npx serve ."
-  },
-  "dependencies": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
   }
 }
