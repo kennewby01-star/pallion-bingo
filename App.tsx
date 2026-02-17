@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 // @ts-ignore
 import confetti from 'canvas-confetti';
 
@@ -27,7 +27,6 @@ const App: React.FC = () => {
   const [drawn, setDrawn] = useState<number[]>([]);
   const [current, setCurrent] = useState<number | null>(null);
   const [rolling, setRolling] = useState<number | null>(null);
-  const [isResetting, setIsResetting] = useState(false);
 
   const remaining = useMemo(() => {
     const all = Array.from({ length: 90 }, (_, i) => i + 1);
@@ -38,7 +37,7 @@ const App: React.FC = () => {
     if (remaining.length === 0 || rolling !== null) return;
 
     let steps = 0;
-    const maxSteps = 12;
+    const maxSteps = 15;
     const interval = setInterval(() => {
       setRolling(Math.floor(Math.random() * 90) + 1);
       steps++;
@@ -49,7 +48,7 @@ const App: React.FC = () => {
         setCurrent(next);
         setRolling(null);
       }
-    }, 50);
+    }, 40);
   }, [remaining, rolling]);
 
   const undo = useCallback(() => {
@@ -72,7 +71,7 @@ const App: React.FC = () => {
       <header className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl md:text-5xl font-black text-[#38bdf8] tracking-tighter">PALLION BINGO</h1>
-          <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Titanium Edition v1.10</p>
+          <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Version 1.11 FINAL</p>
         </div>
         <div className="panel-bg px-4 py-2 rounded-2xl border border-[#38bdf8]/20 flex items-center gap-3">
           <span className="text-xs font-bold text-slate-400 uppercase">Calls</span>
@@ -92,8 +91,8 @@ const App: React.FC = () => {
             </button>
 
             <div className="flex flex-col items-center">
-              <div className="w-40 h-40 md:w-80 md:h-80 rounded-full border-[12px] border-[#38bdf8]/10 bg-[#0f172a] flex items-center justify-center shadow-[0_0_50px_rgba(56,189,248,0.1)]">
-                <span className="text-7xl md:text-[10rem] font-black text-white neon-text">
+              <div className="w-44 h-44 md:w-80 md:h-80 rounded-full border-[12px] border-[#38bdf8]/10 bg-[#0f172a] flex items-center justify-center shadow-[0_0_50px_rgba(56,189,248,0.1)]">
+                <span className="text-8xl md:text-[10rem] font-black text-white neon-text">
                   {rolling !== null ? rolling : (current ?? "—")}
                 </span>
               </div>
