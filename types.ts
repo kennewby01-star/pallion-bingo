@@ -1,24 +1,13 @@
 
-export type BingoNumber = number;
-
-export interface BingoTicket {
-  id: string;
-  grid: (number | null)[][]; // 3 rows x 9 columns
-  marked: boolean[][];
+export enum GameStatus {
+  IDLE = 'IDLE',
+  PLAYING = 'PLAYING',
+  FINISHED = 'FINISHED'
 }
 
-export interface GameState {
+export interface BingoState {
+  allNumbers: number[];
   drawnNumbers: number[];
   currentNumber: number | null;
-  history: number[];
-  isPlaying: boolean;
-  isCalling: boolean;
-  gameStatus: 'ready' | 'playing' | 'paused' | 'finished';
-  bingoLingo: string;
-}
-
-export enum WinType {
-  NONE = 'NONE',
-  LINE = 'LINE',
-  FULL_HOUSE = 'FULL_HOUSE'
+  remainingNumbers: number[];
 }

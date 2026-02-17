@@ -1,5 +1,5 @@
 {
-  "name": "pallion-action-group-bingo!",
+  "name": "pallion-action-group-bingo!-2026",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,10 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react-dom": "^19.2.4",
     "react": "^19.2.4",
-    "lucide-react": "^0.564.0",
-    "@google/genai": "^1.41.0"
+    "react-dom": "^19.2.4",
+    "canvas-confetti": "1.9.3"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
