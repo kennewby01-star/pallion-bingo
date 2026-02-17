@@ -164,7 +164,7 @@ const App: React.FC = () => {
             <span className="text-[7px] md:text-xs text-slate-700 font-bold uppercase tracking-[0.3em] mt-0.5 landscape-hide">
               2026 COMMUNITY EDITION
             </span>
-            <span className="text-[6px] md:text-[9px] text-slate-800 bg-slate-900/50 px-1.5 rounded-full border border-white/5 font-mono landscape-hide">v1.1</span>
+            <span className="text-[6px] md:text-[9px] text-white bg-green-600 px-1.5 rounded-full border border-white/20 font-mono landscape-hide">v1.3 READY</span>
           </div>
         </div>
         
