@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <title>PAG BINGO CALLER v1.9 ULTIMATE</title>
+    <title>PAG BINGO v1.10 TITANIUM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,15 +16,14 @@
             height: 100vh;
             width: 100vw;
             color: #f8fafc;
-            touch-action: manipulation;
-        }
-        .neon-glow {
-            text-shadow: 0 0 15px rgba(56, 189, 248, 0.8), 0 0 30px rgba(56, 189, 248, 0.4);
         }
         .panel-bg {
-            background: rgba(15, 23, 42, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+        .neon-text {
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
         }
         .bingo-grid {
             display: grid;
@@ -35,28 +31,7 @@
             gap: 4px;
             height: 100%;
         }
-        @media (min-width: 768px) { .bingo-grid { gap: 8px; } }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        
-        @media (orientation: landscape) and (max-height: 500px) {
-            .landscape-flex-row { flex-direction: row !important; }
-            .landscape-w-40 { width: 40% !important; flex: none !important; }
-            .landscape-w-60 { width: 60% !important; flex: none !important; }
-            .landscape-h-shrink { height: auto !important; padding: 0.5rem !important; }
-            .landscape-btn-sm { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; font-size: 1.5rem !important; }
-            .landscape-ball-sm { width: 7rem !important; height: 7rem !important; }
-            .landscape-ball-text { font-size: 3.5rem !important; }
-            .landscape-rhyme-sm { font-size: 0.85rem !important; margin-top: 0.25rem !important; }
-            .landscape-action-btn { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; font-size: 0.75rem !important; }
-            .landscape-recent-box { width: 2.5rem !important; height: 2.5rem !important; font-size: 0.85rem !important; }
-            .landscape-header-compact { height: 2.5rem !important; margin-bottom: 0.25rem !important; }
-            .landscape-title-text { font-size: 1rem !important; }
-            .landscape-hide { display: none !important; }
-        }
     </style>
-    <script>
-        window.process = { env: { NODE_ENV: 'production' } };
-    </script>
     <script async src="https://ga.jspm.io/npm:es-module-shims@1.10.0/dist/es-module-shims.js"></script>
     <script type="importmap">
 {
@@ -74,8 +49,13 @@
 <link rel="stylesheet" href="/index.css">
 </head>
 <body>
-    <div id="root"></div>
-    <script type="module" src="./index.tsx?v=1.9"></script>
+    <div id="root">
+        <div style="height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; background:#020617; color:#38bdf8; font-family:sans-serif;">
+            <div style="font-weight:900; font-size:24px; letter-spacing:2px; margin-bottom:10px;">PALLION BINGO</div>
+            <div style="font-size:12px; opacity:0.6;">INITIALIZING TITANIUM ENGINE...</div>
+        </div>
+    </div>
+    <script type="module" src="./index.tsx?v=1.10"></script>
 <script type="module" src="/index.tsx"></script>
 </body>
 </html>
