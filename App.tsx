@@ -87,7 +87,7 @@ const App: React.FC = () => {
           particleCount: 150,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ['#06b6d4', '#7c3aed', '#ffffff'],
+          colors: ['#eab308', '#d946ef', '#ffffff'],
           zIndex: 9999
         });
       }
@@ -164,7 +164,7 @@ const App: React.FC = () => {
             <span className="text-[7px] md:text-xs text-slate-700 font-bold uppercase tracking-[0.3em] mt-0.5 landscape-hide">
               2026 COMMUNITY EDITION
             </span>
-            <span className="text-[6px] md:text-[9px] text-white bg-cyan-600 px-1.5 rounded-full border border-white/20 font-mono animate-pulse landscape-hide">v1.6 STABLE</span>
+            <span className="text-[6px] md:text-[9px] text-[#020617] bg-yellow-400 px-1.5 rounded-full border border-white/20 font-black animate-pulse landscape-hide">v1.7 GOLD</span>
           </div>
         </div>
         
