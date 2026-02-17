@@ -37,7 +37,7 @@ const App: React.FC = () => {
     if (remaining.length === 0 || rolling !== null) return;
 
     let steps = 0;
-    const maxSteps = 15;
+    const maxSteps = 12;
     const interval = setInterval(() => {
       setRolling(Math.floor(Math.random() * 90) + 1);
       steps++;
@@ -59,7 +59,7 @@ const App: React.FC = () => {
   }, [drawn]);
 
   const reset = useCallback(() => {
-    if (confirm("Start a new game?")) {
+    if (window.confirm("Start a new game?")) {
       setDrawn([]);
       setCurrent(null);
       try { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); } catch(e){}
@@ -70,11 +70,11 @@ const App: React.FC = () => {
     <div className="flex flex-col h-screen bg-[#020617] text-white p-4 md:p-8 overflow-hidden">
       <header className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl md:text-5xl font-black text-[#38bdf8] tracking-tighter">PALLION BINGO</h1>
-          <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Version 1.11 FINAL</p>
+          <h1 className="text-2xl md:text-5xl font-black text-[#38bdf8] tracking-tighter uppercase">PALLION BINGO</h1>
+          <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase">STABLE v1.12</p>
         </div>
         <div className="panel-bg px-4 py-2 rounded-2xl border border-[#38bdf8]/20 flex items-center gap-3">
-          <span className="text-xs font-bold text-slate-400 uppercase">Calls</span>
+          <span className="text-xs font-bold text-slate-400 uppercase">Numbers Drawn</span>
           <span className="text-2xl md:text-4xl font-black">{drawn.length}</span>
         </div>
       </header>
@@ -87,7 +87,7 @@ const App: React.FC = () => {
               disabled={remaining.length === 0 || rolling !== null}
               className="w-full py-6 md:py-10 bg-gradient-to-b from-[#38bdf8] to-[#0284c7] rounded-3xl text-3xl md:text-6xl font-black shadow-2xl active:scale-95 transition-all disabled:opacity-20 uppercase"
             >
-              {rolling !== null ? "..." : "DRAW"}
+              {rolling !== null ? "..." : "DRAW NUMBER"}
             </button>
 
             <div className="flex flex-col items-center">
@@ -106,22 +106,22 @@ const App: React.FC = () => {
             </div>
 
             <div className="flex gap-4 w-full">
-              <button onClick={undo} className="flex-1 py-4 bg-slate-800/50 rounded-2xl font-bold uppercase text-slate-400 hover:bg-slate-800 transition-colors">Undo</button>
-              <button onClick={reset} className="flex-1 py-4 bg-red-500/10 rounded-2xl font-bold uppercase text-red-400 hover:bg-red-500/20 transition-colors">Reset</button>
+              <button onClick={undo} className="flex-1 py-4 bg-slate-800/50 rounded-2xl font-bold uppercase text-slate-400 hover:bg-slate-800 transition-colors">Undo Last</button>
+              <button onClick={reset} className="flex-1 py-4 bg-red-500/10 rounded-2xl font-bold uppercase text-red-400 hover:bg-red-500/20 transition-colors">Reset Game</button>
             </div>
           </div>
         </div>
 
         <div className="flex-1 md:w-1/2 panel-bg rounded-[2.5rem] p-6 flex flex-col min-h-0">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-slate-500 font-bold uppercase tracking-widest text-xs">Master Board</h3>
+            <h3 className="text-slate-500 font-bold uppercase tracking-widest text-xs">Full Master Board</h3>
             <span className="text-slate-700 font-mono text-xs">1 - 90</span>
           </div>
           <div className="flex-1 min-h-0">
             <div className="bingo-grid h-full">
               {Array.from({length: 90}, (_, i) => i + 1).map(n => (
                 <div key={n} className={`flex items-center justify-center rounded-lg border text-[10px] md:text-2xl font-black transition-all duration-300
-                  ${current === n && rolling === null ? 'bg-[#38bdf8] text-white border-white scale-110 z-10 shadow-xl shadow-sky-500/20' : 
+                  ${current === n && rolling === null ? 'bg-[#38bdf8] text-white border-white scale-110 z-10 shadow-xl' : 
                     drawn.includes(n) ? 'bg-[#38bdf8]/20 text-[#38bdf8] border-[#38bdf8]/30' : 
                     'bg-transparent text-slate-800 border-white/5'}`}>
                   {n}
@@ -132,7 +132,7 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <footer className="text-center py-4 text-[10px] text-slate-800 font-black tracking-[0.5em]">
+      <footer className="text-center py-4 text-[10px] text-slate-800 font-black tracking-[0.5em] uppercase">
         PAG COMMUNITY BINGO &copy; 2026
       </footer>
     </div>
