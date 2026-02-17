@@ -1,9 +1,9 @@
 {
   "name": "pallion-bingo-caller",
-  "version": "1.3.0",
+  "version": "1.6.0",
   "private": true,
   "scripts": {
-    "build": "echo 'Static deployment: No build step required'",
+    "build": "echo 'Static deployment'",
     "start": "npx serve ."
   },
   "dependencies": {
