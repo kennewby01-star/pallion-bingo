@@ -160,9 +160,12 @@ const App: React.FC = () => {
           <h1 className="text-xl md:text-3xl font-black text-[#d946ef] uppercase tracking-tight leading-none landscape-title-text">
             PALLION ACTION GROUP BINGO!
           </h1>
-          <span className="text-[7px] md:text-xs text-slate-700 font-bold uppercase tracking-[0.3em] mt-0.5 landscape-hide">
-            2026 COMMUNITY EDITION
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[7px] md:text-xs text-slate-700 font-bold uppercase tracking-[0.3em] mt-0.5 landscape-hide">
+              2026 COMMUNITY EDITION
+            </span>
+            <span className="text-[6px] md:text-[9px] text-slate-800 bg-slate-900/50 px-1.5 rounded-full border border-white/5 font-mono landscape-hide">v1.1</span>
+          </div>
         </div>
         
         <div className="flex items-center gap-1.5 md:gap-3 bg-[#0f172a] px-2 py-1 md:px-4 md:py-2 rounded-xl border border-white/10 shadow-2xl">
